@@ -47,3 +47,4 @@ a-maze-ing # main folder
 
 ```
  
+![Project Mapping](project_mapping.png)
