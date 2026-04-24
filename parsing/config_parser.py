@@ -33,7 +33,7 @@ def check_mandatory_keys(config_keys: dict[str, Any]) -> None:
         "EXIT",
         "OUTPUT_FILE",
         "PERFECT",
-    } 
+    }
 
     missing = required_k - config_keys.keys()
 
