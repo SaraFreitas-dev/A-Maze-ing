@@ -53,38 +53,38 @@ a-maze-ing # main folder
 
 Short guide to create an isolated Python environment, install project dependencies, and manage activation/deactivation both on windows and linux.
 
-## Create
+### Create
 ```bash
 python3 -m venv venv
 ```
 
-## Activate
+### Activate
 
-# Linux / macOS
+## Linux / macOS
 ```bash
 source venv/bin/activate
 ```
 
-# Windows (CMD)
+## Windows (CMD)
 ```bash
 venv\Scripts\activate
 ```
 
-# Install requirements (on venv)
+## Install requirements (on venv)
 ```bash
 pip install -r requirements.txt
 ```
 
-# Deactivate
+## Deactivate
 ```bash
 deactivate
 ```
 
-# 📦 Config Parser
+## 📦 Config Parser
 
-## ✅ Status: Complete (for now)
+### ✅ Status: Complete (for now)
 
-### Features:
+#### Features:
 
 - Reads the configuration file  
 - Ignores empty lines and comments  
