@@ -48,3 +48,47 @@ a-maze-ing # main folder
 ```
  
 ![Project Mapping](project_mapping.png)
+
+# 🐍 Virtual Environment: Instructions
+
+Short guide to create an isolated Python environment, install project dependencies, and manage activation/deactivation both on windows and linux.
+
+## Create
+```bash
+python3 -m venv venv
+```
+
+## Activate
+
+# Linux / macOS
+```bash
+source venv/bin/activate
+```
+
+# Windows (CMD)
+```bash
+venv\Scripts\activate
+```
+
+# Install requirements (on venv)
+```bash
+pip install -r requirements.txt
+```
+
+# Deactivate
+```bash
+deactivate
+```
+
+# 📦 Config Parser
+
+## ✅ Status: Complete (for now)
+
+### Features:
+
+- Reads the configuration file  
+- Ignores empty lines and comments  
+- Validates line format (`KEY=VALUE`)  
+- Detects duplicate keys  
+- Ensures all mandatory required keys are present  
+- Displays error messages if needed  

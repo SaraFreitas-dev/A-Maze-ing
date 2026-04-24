@@ -76,9 +76,11 @@ def parse_config(file_path: str) -> dict[str, Any]:
         raise ConfigError(f"File '{file_path}' was not found.")
 
 
+"""
 if __name__ == "__main__":
     try:
         config = parse_config(get_config_path())
         print(config)
     except ConfigError as e:
         print(e)
+"""
