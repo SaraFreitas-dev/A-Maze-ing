@@ -76,11 +76,55 @@ def parse_config(file_path: str) -> dict[str, Any]:
         raise ConfigError(f"File '{file_path}' was not found.")
 
 
-"""
+def convert_config(config: dict[str, str]) -> dict[str, Any]:
+    """
+    Converts config values to proper types (int, tuple, bool)
+    """
+    for key, value in config.items():
+        if key in ("WIDTH", "HEIGHT"):
+            try:
+                config[key] = int(value)
+            except ValueError:
+                raise ConfigError(f"{key} must be an integer")
+
+        elif key in ("ENTRY", "EXIT"):
+            try:
+                x_str, y_str = value.split(",")
+                x = int(x_str.strip())
+                y = int(y_str.strip())
+                config[key] = (x, y)
+            except ValueError:
+                raise ConfigError(f"{key} must be in format x,y")
+
+        elif key == "PERFECT":
+            val = value.lower()
+            if val == "true":
+                config[key] = True
+            elif val == "false":
+                config[key] = False
+            else:
+                raise ConfigError("PERFECT must be True or False")
+    width = config["WIDTH"]
+    height = config["HEIGHT"]
+    entry = config["ENTRY"]
+    exit_ = config["EXIT"]
+
+    if width <= 0 or height <= 0:
+        raise ConfigError("WIDTH and HEIGHT must be positive")
+
+    if entry == exit_:
+        raise ConfigError("ENTRY and EXIT must have different values")
+
+    for name, (x, y) in (("ENTRY", entry), ("EXIT", exit_)):
+        if not (0 <= x < width and 0 <= y < height):
+            raise ConfigError(f"{name} must be inside maze bounds")
+    return config
+
+
 if __name__ == "__main__":
     try:
         config = parse_config(get_config_path())
-        print(config)
+        converted_c = convert_config(config)
+        print(converted_c)
     except ConfigError as e:
         print(e)
-"""

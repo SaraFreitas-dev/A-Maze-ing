@@ -80,6 +80,11 @@ pip install -r requirements.txt
 deactivate
 ```
 
+## Run main - Example
+```bash
+ python3 -m render.ascii_renderer
+```
+
 ## 📦 Config Parser
 
 ### ✅ Status: Complete (for now)
