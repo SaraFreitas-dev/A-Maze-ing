@@ -1,2 +1,3 @@
+# Force flake8 to ignore the following files
 [flake8]
 exclude = venv,__pycache__

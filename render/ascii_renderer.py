@@ -1,7 +1,3 @@
-from core.maze import Maze
-from core.generator import dfs_generator
-
-
 def render(grid: list[list[int]]) -> None:
     """
     TEMPORARY - 0 prints . / 1 prints #
@@ -14,9 +10,3 @@ def render(grid: list[list[int]]) -> None:
             else:
                 line += "#"
         print(line)
-
-
-if __name__ == "__main__":
-    maze = Maze(5, 5, (0, 0), (5, 5))
-    dfs_generator(maze)
-    render(maze.grid)

@@ -17,7 +17,7 @@ def get_config_path() -> str:
     """
     if len(sys.argv) > 1:
         return sys.argv[1]
-    return "config/default_config.txt"
+    return "config.txt"
 
 
 def check_mandatory_keys(config_keys: dict[str, Any]) -> None:
@@ -81,7 +81,7 @@ def convert_config(config: dict[str, str]) -> dict[str, Any]:
     Converts config values to proper types (int, tuple, bool)
     """
     for key, value in config.items():
-        if key in ("WIDTH", "HEIGHT"):
+        if key in ("WIDTH", "HEIGHT", "SEED"):
             try:
                 config[key] = int(value)
             except ValueError:
@@ -119,12 +119,3 @@ def convert_config(config: dict[str, str]) -> dict[str, Any]:
         if not (0 <= x < width and 0 <= y < height):
             raise ConfigError(f"{name} must be inside maze bounds")
     return config
-
-
-if __name__ == "__main__":
-    try:
-        config = parse_config(get_config_path())
-        converted_c = convert_config(config)
-        print(converted_c)
-    except ConfigError as e:
-        print(e)
