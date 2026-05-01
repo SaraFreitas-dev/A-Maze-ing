@@ -55,14 +55,12 @@ def apply_entry_exit(maze: Maze) -> None:
 
     # Before opening entry and exit, validate their coordinates
     if not (x1 == 0 or x1 == width - 1 or
-         y1 == 0 or y1 == height - 1
-    ):
+            y1 == 0 or y1 == height - 1):
         raise ValueError("Invalid entry point. Maze can't be generated.")
     if not (x2 == 0 or x2 == width - 1 or
-         y2 == 0 or y2 == height - 1
-    ):
+            y2 == 0 or y2 == height - 1):
         raise ValueError("Invalid exit point. Maze can't be generated.")
-    
+
     # Open the actual entry "door"
     if x1 == 0:
         grid[entry_y][entry_x - 1] = 0
@@ -101,5 +99,5 @@ def check_open_areas(maze: Maze) -> bool:
                     if grid[y + dy][x + dx] == 0:
                         open_spaces += 1
             if open_spaces == 9:  # found  3x3 opened cells
-               return False
-    return True 
+                return False
+    return True
