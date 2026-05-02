@@ -7,13 +7,11 @@ class Maze:
                  width: int,
                  height: int,
                  entry: tuple[int, int],
-                 exit: tuple[int, int],
-                 output_file: str) -> None:
+                 exit: tuple[int, int]) -> None:
         self.width = width
         self.height = height
         self.entry = entry
         self.exit = exit
-        self.output_file = output_file
 
         self.grid: list[list[int]] = []
         # Size of the grid with walls:

@@ -1,7 +1,7 @@
-from core.maze import Maze
+from mazegen.maze import Maze
 
 
-def render(grid: list[list[int]],
+def render_ascii(grid: list[list[int]],
            maze: Maze,
            path: list[tuple[int, int]]=None) -> None:
     """
