@@ -5,6 +5,7 @@ from render.ascii_renderer import render
 from parsing.config_parser import parse_config, get_config_path, convert_config
 from utils.path_utils import path_to_directions
 from utils.hex_utils import maze_to_hex
+from utils.export_utils import export_maze, print_maze_file
 
 import random
 import time
@@ -26,7 +27,8 @@ if __name__ == "__main__":
                 config["WIDTH"],
                 config["HEIGHT"],
                 config["ENTRY"],
-                config["EXIT"]
+                config["EXIT"],
+                config["OUTPUT_FILE"]
             )
 
             dfs_generator(maze)
@@ -39,7 +41,14 @@ if __name__ == "__main__":
             os.system("clear")
             render(maze.grid, maze, path[:i])
             time.sleep(0.05)
+        
+        export_maze(maze, path, config["OUTPUT_FILE"])
+        print_maze_file(config["OUTPUT_FILE"])
+    except Exception as e:
+        print(f"Error: {e}")
 
+
+"""
         # Print N E S W
         dir_path = path_to_directions(path)
         print("")
@@ -50,6 +59,4 @@ if __name__ == "__main__":
         print("")
         for line in hex_values:
             print("".join(line))
-
-    except Exception as e:
-        print(f"Error: {e}")
+"""

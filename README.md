@@ -31,7 +31,7 @@ deactivate
 
 ## Run main - Example
 ```bash
- python3 -m render.ascii_renderer
+ python3 a_maze_ing.py config.txt
 ```
 
 ## 📦 Config Parser (parsing/config_parser.py)
@@ -120,7 +120,9 @@ dfs_generator()
   ↓
 apply_entry_exit()
   ↓
-check_open_areas() 
+check_open_areas()
+  ↓
+add_42_logo()   ⚠️
   ↓
 if not PERFECT:
     break_walls()    ⚠️ Add extra paths
@@ -131,7 +133,7 @@ path_to_directions()
   ↓
 maze_to_hex()        
   ↓
-export_maze()        !!! ONGOING !!!
+export_maze()
   ↓
 render()             ⚠️ Add Minilibx
   ↓
