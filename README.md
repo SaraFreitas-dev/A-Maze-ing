@@ -129,9 +129,9 @@ solve_maze()
   ↓
 path_to_directions() 
   ↓
-maze_to_hex()        ⚠️
+maze_to_hex()        
   ↓
-export_maze()        ⚠️ Creates maze.txt
+export_maze()        !!! ONGOING !!!
   ↓
 render()             ⚠️ Add Minilibx
   ↓

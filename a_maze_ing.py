@@ -1,9 +1,11 @@
 from core.maze import Maze
+from core.solver import bfs_solve_maze
 from core.generator import dfs_generator, apply_entry_exit, check_open_areas
 from render.ascii_renderer import render
 from parsing.config_parser import parse_config, get_config_path, convert_config
-from core.solver import bfs_solve_maze
 from utils.path_utils import path_to_directions
+from utils.hex_utils import maze_to_hex
+
 import random
 import time
 import os
@@ -42,6 +44,12 @@ if __name__ == "__main__":
         dir_path = path_to_directions(path)
         print("")
         print("".join(dir_path))
+
+        # Print hex values
+        hex_values = maze_to_hex(maze)
+        print("")
+        for line in hex_values:
+            print("".join(line))
 
     except Exception as e:
         print(f"Error: {e}")

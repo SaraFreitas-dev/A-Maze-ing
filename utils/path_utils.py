@@ -1,7 +1,7 @@
 def path_to_directions(path: list[tuple[int, int]]) -> list[str]:
     """
     Receives the path from the path solver algorithm
-    And converts each move to a str with: N, E, S, W values
+    And converts each move to a str list with: N, E, S, W values
     """
     path_str: list[str] = []
 
