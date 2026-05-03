@@ -1,4 +1,4 @@
-from mazegen.maze import Maze
+from mazegen.Maze import Maze
 
 
 def render_ascii(grid: list[list[int]],

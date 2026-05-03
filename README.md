@@ -122,10 +122,10 @@ apply_entry_exit()
   ↓
 check_open_areas()
   ↓
-add_42_logo()   ⚠️
+add_42_logo()   !!! ONGOING !!!
   ↓
 if not PERFECT:
-    break_walls()    ⚠️ Add extra paths
+    break_walls()    
   ↓
 solve_maze()         
   ↓

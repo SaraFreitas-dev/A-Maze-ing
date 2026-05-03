@@ -1,5 +1,6 @@
-from .maze import Maze
+from .Maze import Maze
 import random
+from typing import Optional
 
 
 def dfs_generator(maze: Maze) -> None:
@@ -101,3 +102,55 @@ def check_open_areas(maze: Maze) -> bool:
             if open_spaces == 9:  # found  3x3 opened cells
                 return False
     return True
+
+
+def break_walls(maze: Maze, logo_pos: list[tuple[int, int]]) -> None:
+    """
+    Function to use only if the maze is meant to be NOT PERFECT
+    This will pick the perfect maze generated with DFS and
+    break extra walls randomly to create one or more
+    extra paths between the entry and the exit
+    """
+    directions = [
+        (0, -1),  # UP
+        (0, 1),   # DOWN
+        (-1, 0),  # LEFT
+        (1, 0)    # RIGHT
+    ]
+
+    grid = maze.grid
+    height = maze.grid_height
+    width = maze.grid_width
+    attempts = width * height // 2
+
+    while attempts:
+        attempts -= 1
+        # Pick a random cell and direction
+        gx = random.randrange(0, width, 1)
+        gy = random.randrange(0, height, 1)
+        (dx, dy) = random.choice(directions)
+
+        wall_x = gx + dx
+        wall_y = gy + dy
+        next_x = gx + (2 * dx)
+        next_y = gy + (2 * dy)
+
+        # Protect the logo
+        if logo_pos:
+            if ((wall_y, wall_x) in logo_pos or
+                (next_y, next_x) in logo_pos):
+                continue
+        # Check bounds of the maze
+        if not (0 <= next_y < height and 0 <= next_x < width and
+            0 <= wall_y < height and 0 <= wall_x < width):
+            continue
+        # Condition to break the wall
+        if grid[gy][gx] == 0 and grid[next_y][next_x] == 0:
+            grid[wall_y][wall_x] = 0
+            # Revert if needed, add the wall back
+            if not check_open_areas(maze):
+                grid[wall_y][wall_x] = 1
+
+
+def 
+

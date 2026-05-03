@@ -1,4 +1,4 @@
-from mazegen.maze import Maze
+from mazegen.Maze import Maze
 from utils.hex_utils import maze_to_hex
 from utils.path_utils import path_to_directions
 

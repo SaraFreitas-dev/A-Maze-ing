@@ -1,5 +1,4 @@
-from mazegen.maze import Maze
-from mazegen.maze_generator import MazeGenerator
+from mazegen.MazeGenerator import MazeGenerator
 from parsing.config_parser import parse_config, get_config_path, convert_config
 from utils.export_utils import print_maze_file
 
@@ -18,7 +17,7 @@ if __name__ == "__main__":
         mazegen.solve("bfs")
         mazegen.render()
         mazegen.export(config["OUTPUT_FILE"])
-        print_maze_file(config["OUTPUT_FILE"])
+        # print_maze_file(config["OUTPUT_FILE"])
     except Exception as e:
         print(f"Error: {e}")
 

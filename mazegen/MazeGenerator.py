@@ -1,8 +1,9 @@
 from collections import deque
 import random, time, os
-from mazegen.maze import Maze
+from mazegen.Maze import Maze
 from mazegen.solver import bfs_solve_maze
-from mazegen.generator import dfs_generator, apply_entry_exit, check_open_areas
+from mazegen.generator import (dfs_generator, apply_entry_exit,
+                               check_open_areas, break_walls)
 from render.ascii_renderer import render_ascii
 from utils.export_utils import export_maze
 
@@ -38,23 +39,29 @@ class MazeGenerator:
         If not, generate another maze
         Add the entry and exit cells
         """
-        if self.seed is not None:
-            random.seed(self.seed)
+        try:
+            if self.seed is not None:
+                random.seed(self.seed)
 
-        while True:
-            maze = Maze(
-                self.width,
-                self.height,
-                self.entry,
-                self.exit
-            )
+            while True:
+                maze = Maze(
+                    self.width,
+                    self.height,
+                    self.entry,
+                    self.exit
+                )
+                dfs_generator(maze)
+                apply_entry_exit(maze)
 
-            dfs_generator(maze)
-            apply_entry_exit(maze)
+                if not self.perfect:
+                    break_walls(maze, [])
 
-            if check_open_areas(maze):
-                break
-        self.maze = maze
+                if check_open_areas(maze):
+                    break
+
+            self.maze = maze
+        except (ValueError, Exception) as e:
+            print(f"generate_maze(): {e}")
         return maze
 
     def solve(self, algorithm: str) -> list[tuple[int, int]]:
