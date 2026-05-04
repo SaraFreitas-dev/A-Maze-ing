@@ -76,7 +76,7 @@ def parse_config(file_path: str) -> dict[str, Any]:
         raise ConfigError(f"File '{file_path}' was not found.")
 
 
-def convert_config(config: dict[str, str]) -> dict[str, Any]:
+def convert_config(config: dict[str, Any]) -> dict[str, Any]:
     """
     Converts config values to proper types (int, tuple, bool)
     """

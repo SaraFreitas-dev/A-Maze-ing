@@ -16,7 +16,7 @@ source venv/bin/activate
 
 ## Windows (CMD)
 ```bash
-venv\Scripts\activate
+source venv/bin/activate
 ```
 
 ## Install requirements (on venv)
@@ -122,7 +122,7 @@ apply_entry_exit()
   ↓
 check_open_areas()
   ↓
-add_42_logo()   !!! ONGOING !!!
+add_42_logo()   
   ↓
 if not PERFECT:
     break_walls()    
@@ -135,7 +135,7 @@ maze_to_hex()
   ↓
 export_maze()
   ↓
-render()             ⚠️ Add Minilibx
+render()             ⚠️ !!! ONGOING !!!
   ↓
 menu()               ⚠️
   ↓

@@ -39,20 +39,20 @@ def bfs_solve_maze(maze: Maze) -> list[tuple[int, int]]:
     # Until the exit is found
     while queue:
         y, x = queue.popleft()
-        
+
         if (y, x) == end:
             break
-    
+
         for dy, dx in directions:
             new_y = y + dy
             new_x = x + dx
-        
+
             # Check if the new y, x is inside of the maze bonds
             if not (0 <= new_y < height and 0 <= new_x < width):
                 continue
 
-            # Check if its a wall
-            if grid[new_y][new_x] == 1:
+            # Check if its a wall or logo
+            if grid[new_y][new_x] == 1 or grid[new_y][new_x] == 2:
                 continue
 
             # Check if it was already visited
@@ -76,6 +76,5 @@ def bfs_solve_maze(maze: Maze) -> list[tuple[int, int]]:
         # Get the result from the start to the exit point
         path.reverse()
     except KeyError:
-        print("Path could not be found.")
         return []
     return path

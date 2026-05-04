@@ -1,6 +1,5 @@
 from .Maze import Maze
 import random
-from typing import Optional
 
 
 def dfs_generator(maze: Maze) -> None:
@@ -142,7 +141,7 @@ def break_walls(maze: Maze, logo_pos: list[tuple[int, int]]) -> None:
                 continue
         # Check bounds of the maze
         if not (0 <= next_y < height and 0 <= next_x < width and
-            0 <= wall_y < height and 0 <= wall_x < width):
+                0 <= wall_y < height and 0 <= wall_x < width):
             continue
         # Condition to break the wall
         if grid[gy][gx] == 0 and grid[next_y][next_x] == 0:
@@ -152,5 +151,47 @@ def break_walls(maze: Maze, logo_pos: list[tuple[int, int]]) -> None:
                 grid[wall_y][wall_x] = 1
 
 
-def 
+def add_42_logo(maze: Maze) -> list[tuple[int, int]]:
+    """
+    Adds the 42 logo in the middle of the maze
+    If the maze is too small, prints an error message
+    and the maze without the logo
+    """
+    pattern = [
+        [1, 0, 0, 1, 0, 1, 1, 1, 1],
+        [1, 0, 0, 1, 0, 0, 0, 0, 1],
+        [1, 1, 1, 1, 0, 1, 1, 1, 1],
+        [1, 0, 0, 0, 0, 1, 0, 0, 0],
+        [1, 0, 0, 0, 0, 1, 1, 1, 1],
+        ]
 
+    pat_w = len(pattern[0])
+    pat_h = len(pattern)
+
+    # Check if the maze is big enought for the logo
+    grid = maze.grid
+    grid_w = maze.grid_width
+    grid_h = maze.grid_height
+
+    if grid_w < (pat_w + 3) or grid_h < (pat_h + 3):
+        return []
+
+    # Calculate the middle of the maze
+    center_y = grid_h // 2
+    center_x = grid_w // 2
+
+    # Calculate the offset - Where to add the pattern
+    start_y = center_y - (pat_h // 2)
+    start_x = center_x - (pat_w // 2)
+
+    logo_pos = []
+
+    for y in range(pat_h):
+        for x in range(pat_w):
+            if pattern[y][x] == 1:
+                gy = start_y + y
+                gx = start_x + x
+                grid[gy][gx] = 2
+                logo_pos.append((gy, gx))
+
+    return logo_pos

@@ -1,9 +1,13 @@
-from collections import deque
-import random, time, os
+import random
+import time
+import os
 from mazegen.Maze import Maze
 from mazegen.solver import bfs_solve_maze
-from mazegen.generator import (dfs_generator, apply_entry_exit,
-                               check_open_areas, break_walls)
+from mazegen.generator import (dfs_generator,
+                               apply_entry_exit,
+                               check_open_areas,
+                               break_walls,
+                               add_42_logo)
 from render.ascii_renderer import render_ascii
 from utils.export_utils import export_maze
 
@@ -30,8 +34,8 @@ class MazeGenerator:
         self.entry = entry
         self.exit = exit
         self.perfect = perfect
-        self.seed= seed
-    
+        self.seed = seed
+
     def generate_maze(self) -> Maze:
         """
         Generate a maze with dfs
@@ -43,26 +47,38 @@ class MazeGenerator:
             if self.seed is not None:
                 random.seed(self.seed)
 
-            while True:
-                maze = Maze(
-                    self.width,
-                    self.height,
-                    self.entry,
-                    self.exit
-                )
-                dfs_generator(maze)
-                apply_entry_exit(maze)
+            max_attempts = 1000
 
-                if not self.perfect:
-                    break_walls(maze, [])
+            for _ in range(max_attempts):
+                    maze = Maze(
+                        self.width,
+                        self.height,
+                        self.entry,
+                        self.exit
+                    )
 
-                if check_open_areas(maze):
-                    break
+                    dfs_generator(maze)
+                    apply_entry_exit(maze)
 
-            self.maze = maze
-        except (ValueError, Exception) as e:
-            print(f"generate_maze(): {e}")
-        return maze
+                    if not check_open_areas(maze):
+                        continue
+
+                    logo_pos = add_42_logo(maze)
+                    if not logo_pos:
+                        print("The maze was not big enough to showcase the maze logo.")
+
+                    if not self.perfect:
+                        break_walls(maze, logo_pos)
+
+                    path = bfs_solve_maze(maze)
+                    if path:
+                        self.logo_pos = logo_pos
+                        self.maze = maze
+                        return maze
+            raise ValueError("generate_maze(): Could not generate a valid maze.")
+
+        except (KeyError, Exception) as e:
+            raise ValueError(f"generate_maze(): {e}")
 
     def solve(self, algorithm: str) -> list[tuple[int, int]]:
         """
@@ -75,19 +91,23 @@ class MazeGenerator:
             raise ValueError("solve(): No algorithm found with that name.")
         self.path = path
         return path
-    
-    def render(self):
+
+    def render(self, show_path: bool):
         """
         Renders the maze and shows it on the terminal
         """
         try:
-            for i in range(1, len(self.path) + 1):
+            if not show_path:
+                render_ascii(self.maze.grid, self.maze)
+
+            else:
+                for i in range(1, len(self.path) + 1):
                     os.system("clear")
                     render_ascii(self.maze.grid, self.maze, self.path[:i])
                     time.sleep(0.05)
         except Exception:
             print("render(): Failed to show the maze.")
-    
+
     def export(self, output_file: str) -> None:
         """
         Exports the information from the maze to

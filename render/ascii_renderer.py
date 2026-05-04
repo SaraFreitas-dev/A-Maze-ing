@@ -2,8 +2,8 @@ from mazegen.Maze import Maze
 
 
 def render_ascii(grid: list[list[int]],
-           maze: Maze,
-           path: list[tuple[int, int]]=None) -> None:
+                 maze: Maze,
+                 path: list[tuple[int, int]]) -> None:
     """
     TEMPORARY - 0 prints . / 1 prints # / X in path (bfs solver)
     """
@@ -12,7 +12,6 @@ def render_ascii(grid: list[list[int]],
     entry_x, entry_y = maze.entry
     exit_x, exit_y = maze.exit
 
-    # 🔹 1. converter para grid expandido (célula interna)
     entry_cell = (entry_y * 2 + 1, entry_x * 2 + 1)
     exit_cell = (exit_y * 2 + 1, exit_x * 2 + 1)
 
@@ -39,19 +38,24 @@ def render_ascii(grid: list[list[int]],
         for (y, x) in path:
             solved_grid[y][x] = "X"
 
-    # 🔹 4. render
     for y, row in enumerate(solved_grid):
         line = ""
         for x, cell in enumerate(row):
-
             if (y, x) == entry_pos:
-                line += "S"
+                line += "\033[92mS\033[0m"
+
             elif (y, x) == exit_pos:
-                line += "E"
+                line += "\033[92mE\033[0m"
+
             elif cell == "X":
-                line += "."
+                line += "\033[94m.\033[0m"
+
             elif cell == 0:
                 line += " "
+
+            elif cell == 2:
+                line += "\033[91m■\033[0m"
+
             else:
                 line += "#"
         print(line)
