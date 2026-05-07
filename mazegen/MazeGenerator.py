@@ -50,32 +50,34 @@ class MazeGenerator:
             max_attempts = 1000
 
             for _ in range(max_attempts):
-                    maze = Maze(
-                        self.width,
-                        self.height,
-                        self.entry,
-                        self.exit
-                    )
+                maze = Maze(
+                    self.width,
+                    self.height,
+                    self.entry,
+                    self.exit
+                )
 
-                    dfs_generator(maze)
-                    apply_entry_exit(maze)
+                dfs_generator(maze)
+                apply_entry_exit(maze)
 
-                    if not check_open_areas(maze):
-                        continue
+                if not check_open_areas(maze):
+                    continue
 
-                    logo_pos = add_42_logo(maze)
-                    if not logo_pos:
-                        print("The maze was not big enough to showcase the maze logo.")
+                logo_pos = add_42_logo(maze)
+                if not logo_pos:
+                    print("The maze was not big enough "
+                          "to showcase the maze logo.")
 
-                    if not self.perfect:
-                        break_walls(maze, logo_pos)
+                if not self.perfect:
+                    break_walls(maze, logo_pos)
 
-                    path = bfs_solve_maze(maze)
-                    if path:
-                        self.logo_pos = logo_pos
-                        self.maze = maze
-                        return maze
-            raise ValueError("generate_maze(): Could not generate a valid maze.")
+                path = bfs_solve_maze(maze)
+                if path:
+                    self.logo_pos = logo_pos
+                    self.maze = maze
+                    return maze
+            raise ValueError("generate_maze(): Could not generate "
+                             "a valid maze.")
 
         except (KeyError, Exception) as e:
             raise ValueError(f"generate_maze(): {e}")
@@ -92,7 +94,7 @@ class MazeGenerator:
         self.path = path
         return path
 
-    def render(self, show_path: bool):
+    def render(self, show_path: bool) -> None:
         """
         Renders the maze and shows it on the terminal
         """

@@ -17,7 +17,7 @@ def get_config_path() -> str:
     """
     if len(sys.argv) > 1:
         return sys.argv[1]
-    return "config.txt"
+    raise ValueError("No .txt file provided.")
 
 
 def check_mandatory_keys(config_keys: dict[str, Any]) -> None:

@@ -3,7 +3,7 @@ from mazegen.Maze import Maze
 
 def render_ascii(grid: list[list[int]],
                  maze: Maze,
-                 path: list[tuple[int, int]]) -> None:
+                 path: list[tuple[int, int]] | None = None) -> None:
     """
     TEMPORARY - 0 prints . / 1 prints # / X in path (bfs solver)
     """
@@ -36,7 +36,7 @@ def render_ascii(grid: list[list[int]],
 
     if path is not None:
         for (y, x) in path:
-            solved_grid[y][x] = "X"
+            solved_grid[y][x] = 3
 
     for y, row in enumerate(solved_grid):
         line = ""
@@ -47,7 +47,7 @@ def render_ascii(grid: list[list[int]],
             elif (y, x) == exit_pos:
                 line += "\033[92mE\033[0m"
 
-            elif cell == "X":
+            elif cell == 3:
                 line += "\033[94m.\033[0m"
 
             elif cell == 0:

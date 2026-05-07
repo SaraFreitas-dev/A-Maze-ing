@@ -10,4 +10,4 @@ authors = [
 ]
 
 [tool.flake8]
-exclude = ["venv", "__pycache__"]
+exclude = ["venv", "__pycache__", "mlx_CLXV"]

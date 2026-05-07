@@ -8,13 +8,6 @@ python3 -m venv venv
 ```
 
 ### Activate
-
-## Linux / macOS
-```bash
-source venv/bin/activate
-```
-
-## Windows (CMD)
 ```bash
 source venv/bin/activate
 ```
@@ -32,6 +25,12 @@ deactivate
 ## Run main - Example
 ```bash
  python3 a_maze_ing.py config.txt
+```
+
+## Install MinilibMLX and check man (on venv)
+```bash
+python3 -m pip install ./mlx-2.2-py3-ubuntu-any.whl
+man -M mlx_CLXV/man mlx
 ```
 
 ## 📦 Config Parser (parsing/config_parser.py)

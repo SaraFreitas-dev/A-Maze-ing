@@ -136,8 +136,10 @@ def break_walls(maze: Maze, logo_pos: list[tuple[int, int]]) -> None:
 
         # Protect the logo
         if logo_pos:
-            if ((wall_y, wall_x) in logo_pos or
-                (next_y, next_x) in logo_pos):
+            if (
+                (wall_y, wall_x) in logo_pos
+                or (next_y, next_x) in logo_pos
+            ):
                 continue
         # Check bounds of the maze
         if not (0 <= next_y < height and 0 <= next_x < width and
