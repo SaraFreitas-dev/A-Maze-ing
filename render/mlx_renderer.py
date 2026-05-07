@@ -8,8 +8,8 @@ import os
 # WINDOW
 # ---------------------------------
 
-WINDOW_WIDTH = 1000
-WINDOW_HEIGHT = 800
+WINDOW_WIDTH = 1650
+WINDOW_HEIGHT = 1350
 
 TILE_SIZE = 64
 
