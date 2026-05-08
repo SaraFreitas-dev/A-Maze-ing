@@ -1,4 +1,4 @@
-from .Maze import Maze
+from .s import Maze
 import random
 
 

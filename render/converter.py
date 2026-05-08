@@ -53,48 +53,48 @@ def generate_all_assets(
     # WALL
     # -------------------------
 
-    resized_wall_png = (
-        f"assets/generated/wall_{tile_size}.png"
+    resized_light_wall_png = (
+        f"assets/generated/light_wall_{tile_size}.jpeg"
     )
 
-    wall_xpm = (
-        f"assets/generated/wall_{tile_size}.xpm"
+    light_wall_xpm = (
+        f"assets/generated/light_wall_{tile_size}.xpm"
     )
 
-    if not os.path.exists(wall_xpm):
+    if not os.path.exists(light_wall_xpm):
 
         generate_scaled_asset(
-            "assets/imgs/walls.jpeg",
-            resized_wall_png,
+            "assets/imgs/light_wall.png",
+            resized_light_wall_png,
             tile_size
         )
 
         convert_to_xpm(
-            resized_wall_png,
-            wall_xpm
+            resized_light_wall_png,
+            light_wall_xpm
         )
 
     # -------------------------
 
-    resized_wall_42_png = (
-        f"assets/generated/wall_42_{tile_size}.png"
+    resized_dark_42_png = (
+        f"assets/generated/dark_wall_{tile_size}.png"
     )
 
-    wall_42_xpm = (
-        f"assets/generated/wall_42_{tile_size}.xpm"
+    wall_dark_42_42_xpm = (
+        f"assets/generated/dark_wall_{tile_size}.xpm"
     )
 
-    if not os.path.exists(wall_42_xpm):
+    if not os.path.exists(wall_dark_42_42_xpm):
 
         generate_scaled_asset(
-            "assets/imgs/wall_42.png",
-            resized_wall_42_png,
+            "assets/imgs/dark_wall.png",
+            resized_dark_42_png,
             tile_size
         )
 
         convert_to_xpm(
-            resized_wall_42_png,
-            wall_42_xpm
+            resized_dark_42_png,
+            wall_dark_42_42_xpm
         )
 
     # -------------------------
@@ -135,7 +135,7 @@ def generate_all_assets(
     if not os.path.exists(gothic_floor_xpm):
 
         generate_scaled_asset(
-            "assets/imgs/gothic_floor.jpeg",
+            "assets/imgs/gothic_floor.png",
             resized_gothic_floor_png,
             tile_size
         )
@@ -231,7 +231,7 @@ def generate_all_assets(
     if not os.path.exists(gothic_duck_xpm):
 
         generate_scaled_asset(
-            "assets/imgs/gothic_duck.jpeg",
+            "assets/imgs/gothic_duck.png",
             resized_gothic_duck_png,
             tile_size
         )

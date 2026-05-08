@@ -1,6 +1,6 @@
 from mlx import Mlx
 from render.Assets import Assets
-from mazegen.Maze import Maze
+from mazegen.s import Maze
 from render.converter import generate_all_assets
 from render.draw_maze import draw_maze
 import os
@@ -138,5 +138,5 @@ def mlx_window(maze: Maze,
             path[:i]
         )
 
-        time.sleep(0.2)
+        time.sleep(0.1)
     mlx.mlx_loop(mlx_ptr)

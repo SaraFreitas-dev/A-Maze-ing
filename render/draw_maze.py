@@ -1,6 +1,6 @@
 from mlx import Mlx
 from render.Assets import Assets
-from mazegen.Maze import Maze
+from mazegen.s import Maze
 
 
 def draw_maze(
@@ -88,17 +88,17 @@ def draw_maze(
 
             # ENTRY
             if (grid_x,grid_y) == (door_entry_x, door_entry_y):
-                tile = assets.duck_normal
+                tile = assets.duck
 
             # EXIT
             elif (grid_x, grid_y) == (door_exit_x, door_exit_y):
-                tile = assets.duck_normal
+                tile = assets.duck
 
             elif cell == 3:
-                tile = assets.duck_normal
+                tile = assets.duck
 
             elif cell == 0:
-                tile = assets.floor_normal
+                tile = assets.floor
             elif cell == 1:
                 tile = assets.wall
             elif cell == 2:
@@ -114,4 +114,5 @@ def draw_maze(
                 tile,
                 screen_x,
                 screen_y
+            
             )

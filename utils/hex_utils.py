@@ -1,4 +1,4 @@
-from mazegen.Maze import Maze
+from mazegen.s import Maze
 
 
 def maze_to_hex(maze: Maze) -> list[list[str]]:

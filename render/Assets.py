@@ -18,25 +18,25 @@ class Assets:
         )
 
         # WALL
+        if theme == "normal":
+            wall_file = "light_wall"
+            wall_42_file = "dark_wall"
+        else:
+            wall_file = "dark_wall"
+            wall_42_file = "light_wall"
+
         self.wall, _, _ = mlx.mlx_xpm_file_to_image(
             mlx_ptr,
-            f"assets/generated/wall_{tile_size}.xpm"
+            f"assets/generated/{wall_file}_{tile_size}.xpm"
         )
-
-        # 42 WALL - DARKER
+        # 42 WALL
         self.wall_42, _, _ = mlx.mlx_xpm_file_to_image(
             mlx_ptr,
-            f"assets/generated/wall_42_{tile_size}.xpm"
+            f"assets/generated/{wall_42_file}_{tile_size}.xpm"
         )
 
-        # NORMAL THEME
-        self.floor_normal, _, _ = mlx.mlx_xpm_file_to_image(
-            mlx_ptr,
-            f"assets/generated/{theme}_floor_{tile_size}.xpm"
-        )
-
-        # GOTHIC THEME
-        self.floor_gothic, _, _ = mlx.mlx_xpm_file_to_image(
+        # FLOOR
+        self.floor, _, _ = mlx.mlx_xpm_file_to_image(
             mlx_ptr,
             f"assets/generated/{theme}_floor_{tile_size}.xpm"
         )
@@ -54,12 +54,7 @@ class Assets:
         )
 
         # DUCKS / PLAYER
-        self.duck_normal, _, _ = mlx.mlx_xpm_file_to_image(
-            mlx_ptr,
-            f"assets/generated/{theme}_duck_{tile_size}.xpm"
-        )
-
-        self.duck_gothic, _, _ = mlx.mlx_xpm_file_to_image(
+        self.duck, _, _ = mlx.mlx_xpm_file_to_image(
             mlx_ptr,
             f"assets/generated/{theme}_duck_{tile_size}.xpm"
         )
