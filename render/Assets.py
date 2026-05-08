@@ -6,7 +6,10 @@ class Assets:
     """
     Loads and stores all game assets
     """
-    def __init__(self, mlx: Mlx, mlx_ptr: Any, tile_size: int) -> None:
+    def __init__(self, mlx: Mlx,
+                 mlx_ptr: Any,
+                 tile_size: int,
+                 theme: str) -> None:
         # MENU BACKGROUND
         self.title_size = tile_size
         self.menu_background, _, _ = mlx.mlx_xpm_file_to_image(
@@ -14,21 +17,28 @@ class Assets:
             "assets/imgs/menu_background.xpm"
         )
 
-        # NORMAL THEME
+        # WALL
         self.wall, _, _ = mlx.mlx_xpm_file_to_image(
             mlx_ptr,
             f"assets/generated/wall_{tile_size}.xpm"
         )
 
+        # 42 WALL - DARKER
+        self.wall_42, _, _ = mlx.mlx_xpm_file_to_image(
+            mlx_ptr,
+            f"assets/generated/wall_42_{tile_size}.xpm"
+        )
+
+        # NORMAL THEME
         self.floor_normal, _, _ = mlx.mlx_xpm_file_to_image(
             mlx_ptr,
-            f"assets/generated/normal_floor_{tile_size}.xpm"
+            f"assets/generated/{theme}_floor_{tile_size}.xpm"
         )
 
         # GOTHIC THEME
         self.floor_gothic, _, _ = mlx.mlx_xpm_file_to_image(
             mlx_ptr,
-            f"assets/generated/gothic_floor_{tile_size}.xpm"
+            f"assets/generated/{theme}_floor_{tile_size}.xpm"
         )
 
         # UI HUD / BANNER
@@ -40,10 +50,10 @@ class Assets:
         # DUCKS / PLAYER
         self.duck_normal, _, _ = mlx.mlx_xpm_file_to_image(
             mlx_ptr,
-            f"assets/generated/normal_duck_{tile_size}.xpm"
+            f"assets/generated/{theme}_duck_{tile_size}.xpm"
         )
 
         self.duck_gothic, _, _ = mlx.mlx_xpm_file_to_image(
             mlx_ptr,
-            f"assets/generated/gothic_duck_{tile_size}.xpm"
+            f"assets/generated/{theme}_duck_{tile_size}.xpm"
         )
