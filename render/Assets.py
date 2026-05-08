@@ -4,7 +4,7 @@ from typing import Any
 
 class Assets:
     """
-    Loads and stores all game assets
+    Loads and stores all game assets / images
     """
     def __init__(self, mlx: Mlx,
                  mlx_ptr: Any,
@@ -39,6 +39,12 @@ class Assets:
         self.floor_gothic, _, _ = mlx.mlx_xpm_file_to_image(
             mlx_ptr,
             f"assets/generated/{theme}_floor_{tile_size}.xpm"
+        )
+
+        # TRAIL
+        self.trail, _, _ = mlx.mlx_xpm_file_to_image(
+            mlx_ptr,
+            f"assets/generated/{theme}_trail_{tile_size}.xpm"
         )
 
         # UI HUD / BANNER
