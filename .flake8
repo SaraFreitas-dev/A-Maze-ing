@@ -1,0 +1,7 @@
+[flake8]
+exclude =
+    venv,
+    .venv,
+    __pycache__,
+    mlx_CLXV,
+    mypy_cache

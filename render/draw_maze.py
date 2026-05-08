@@ -56,10 +56,6 @@ def draw_maze(
     # ---------------------------------
     # DRAW PATH
     # ---------------------------------
-    
-    # ---------------------------------
-    # DRAW PATH
-    # ---------------------------------
 
     solved_grid = [row[:] for row in grid]
 
@@ -93,17 +89,14 @@ def draw_maze(
             # EXIT
             elif (grid_x, grid_y) == (door_exit_x, door_exit_y):
                 tile = assets.duck
-
             elif cell == 3:
                 tile = assets.duck
-
             elif cell == 0:
                 tile = assets.floor
             elif cell == 1:
                 tile = assets.wall
             elif cell == 2:
                 tile = assets.wall_42
-
             else:
                 tile = assets.trail
 
@@ -114,5 +107,5 @@ def draw_maze(
                 tile,
                 screen_x,
                 screen_y
-            
             )
+
