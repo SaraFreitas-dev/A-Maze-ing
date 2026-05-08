@@ -1,6 +1,6 @@
 from mlx import Mlx
 from render.Assets import Assets
-from mazegen.s import Maze
+from mazegen.Maze import Maze
 from render.converter import generate_all_assets
 from render.draw_maze import draw_maze
 import os

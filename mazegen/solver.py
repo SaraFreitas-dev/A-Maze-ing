@@ -1,5 +1,5 @@
 from collections import deque
-from mazegen.s import Maze
+from mazegen.Maze import Maze
 
 
 def bfs_solve_maze(maze: Maze) -> list[tuple[int, int]]:

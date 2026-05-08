@@ -16,7 +16,6 @@ venv:
 
 # ENTER ON VENV / ACTIVATE
 activate:
-	activate:
 	@if [ -n "$$VIRTUAL_ENV" ]; then \
 		echo "Already inside a virtual environment"; \
 	else \
@@ -25,7 +24,7 @@ activate:
 	fi
 
 # INSTALL ALL REQUIREMENTS
-install: venv
+
 install: venv
 	$(PIP) install --upgrade pip
 	$(PIP) install -r requirements.txt

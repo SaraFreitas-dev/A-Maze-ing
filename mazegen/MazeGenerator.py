@@ -1,5 +1,5 @@
 import random
-from mazegen.s import Maze
+from mazegen.Maze import Maze
 from mazegen.solver import bfs_solve_maze
 from mazegen.generator import (dfs_generator,
                                apply_entry_exit,
