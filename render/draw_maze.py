@@ -63,7 +63,7 @@ def draw_maze(
 
         visual_path = [
             (door_entry_y, door_entry_x),
-            *path
+            *path,
         ]
 
         for (y, x) in visual_path[:-1]:
@@ -72,11 +72,9 @@ def draw_maze(
         current_y, current_x = visual_path[-1]
 
         if (current_y, current_x) == (exit_y, exit_x):
+            solved_grid[current_y][current_x] = 4
             current_y, current_x = door_exit_y, door_exit_x
-
         solved_grid[current_y][current_x] = 3
-
-        #solved_grid[current_y][current_x] = 3
 
     for grid_y, row in enumerate(solved_grid):
         for grid_x, cell in enumerate(row):
@@ -115,7 +113,7 @@ def draw_maze(
                     screen_x,
                     screen_y
                 )
-
+"""
             # ENTRY
             if (grid_x, grid_y) == (door_entry_x, door_entry_y):
                 mlx.mlx_put_image_to_window(
@@ -125,3 +123,4 @@ def draw_maze(
                     screen_x,
                     screen_y
                 )
+"""

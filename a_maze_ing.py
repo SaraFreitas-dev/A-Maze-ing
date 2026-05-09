@@ -19,7 +19,7 @@ if __name__ == "__main__":
         # mazegen.render(show_path=False)
         mazegen.export(config["OUTPUT_FILE"])
         # print_maze_file(config["OUTPUT_FILE"])
-        mlx_window(maze, path, "normal")
+        mlx_window(maze, path, "gothic")
     except Exception as e:
         print(f"Error: {e}")
 

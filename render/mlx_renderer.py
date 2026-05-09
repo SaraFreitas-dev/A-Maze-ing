@@ -26,7 +26,6 @@ def close(param) -> None:
 
 def key_hook(key, param) -> None:
     """Close with ESC"""
-
     ESC_KEY = 65307
 
     if key == ESC_KEY:
@@ -132,7 +131,7 @@ def mlx_window(maze: Maze,
     def on_loop(param) -> None:
         now = time.time()
         if (frame[0] <= len(path) and
-            now - last_time[0] >= 0.03):
+            now - last_time[0] >= 0.05):
             draw_maze(
                 maze,
                 mlx,
