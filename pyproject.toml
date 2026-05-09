@@ -11,3 +11,7 @@ authors = [
 
 [tool.flake8]
 exclude = ["venv", "__pycache__", "mlx_CLXV"]
+
+[tool.mypy]
+ignore_missing_imports = true
+exclude = ["venv", "mlx_CLXV"]

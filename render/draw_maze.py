@@ -1,6 +1,7 @@
 from mlx import Mlx
 from render.Assets import Assets
 from mazegen.Maze import Maze
+from typing import Any
 
 
 # ---------------------------------
@@ -14,8 +15,8 @@ WINDOW_HEIGHT = 900
 def draw_maze(
     maze: Maze,
     mlx: Mlx,
-    mlx_ptr,
-    win_ptr,
+    mlx_ptr: Any,
+    win_ptr: Any,
     tile_size: int,
     assets: Assets,
     grid: list[list[int]],
@@ -95,7 +96,6 @@ def draw_maze(
             screen_x = offset_x + (grid_x * tile_size)
             screen_y = offset_y + (grid_y * tile_size)
 
-
             # BASE TILE
             if cell == 3:
                 tile = assets.duck
@@ -126,14 +126,3 @@ def draw_maze(
                     screen_x,
                     screen_y
                 )
-"""
-            # ENTRY
-            if (grid_x, grid_y) == (door_entry_x, door_entry_y):
-                mlx.mlx_put_image_to_window(
-                    mlx_ptr,
-                    win_ptr,
-                    assets.duck,
-                    screen_x,
-                    screen_y
-                )
-"""

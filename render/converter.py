@@ -2,10 +2,9 @@ from PIL import Image
 import os
 
 
-def generate_scaled_asset(
-    input_path: str,
-    output_path: str,
-    tile_size: int) -> None:
+def generate_scaled_asset(input_path: str,
+                          output_path: str,
+                          tile_size: int) -> None:
     """
     Resize image and save as PNG
     """
@@ -14,12 +13,12 @@ def generate_scaled_asset(
     image = Image.open(input_path)
 
     # Resize image
-    image = image.resize(
+    resized_image = image.resize(
         (tile_size, tile_size),
-        Image.NEAREST)
+        Image.Resampling.NEAREST)
 
     # Save resized PNG
-    image.save(output_path)
+    resized_image.save(output_path)
 
 
 def convert_to_xpm(png_path: str, xpm_path: str) -> None:
@@ -125,14 +124,11 @@ def generate_all_assets(tile_size: int) -> None:
 
     if not os.path.exists(gothic_floor_xpm):
 
-        generate_scaled_asset(
-            "assets/imgs/gothic_floor.png",
-            resized_gothic_floor_png,
-            tile_size)
+        generate_scaled_asset("assets/imgs/gothic_floor.png",
+                              resized_gothic_floor_png,
+                              tile_size)
 
-        convert_to_xpm(
-            resized_gothic_floor_png,
-            gothic_floor_xpm)
+        convert_to_xpm(resized_gothic_floor_png, gothic_floor_xpm)
 
     # -------------------------
     # TRAIL
@@ -152,7 +148,7 @@ def generate_all_assets(tile_size: int) -> None:
             tile_size)
 
         convert_to_xpm(normal_trail_png, normal_trail_xpm)
-    
+
     # -------------------------
 
     gothic_trail_png = (
@@ -192,7 +188,7 @@ def generate_all_assets(tile_size: int) -> None:
             resized_normal_exit_png, normal_exit_xpm)
 
         resized_normal_exit_png = (
-        f"assets/generated/normal_exit_{tile_size}.png")
+            f"assets/generated/normal_exit_{tile_size}.png")
 
     # -------------------------
 
@@ -212,7 +208,6 @@ def generate_all_assets(tile_size: int) -> None:
         )
 
         convert_to_xpm(resized_gothic_exit_png, gothic_exit_xpm)
-
 
     # -------------------------
     # DUCK

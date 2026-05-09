@@ -1,6 +1,6 @@
 from mlx import Mlx
+from typing import Any
 from render.Assets import Assets
-from mazegen.Maze import Maze
 from render.converter import generate_all_assets
 from render.draw_maze import draw_maze
 from render.menu import (_prepare_menu_images, _draw_menu)
@@ -28,13 +28,13 @@ KEY_4: int = 52
 KEY_5: int = 53
 KEY_6: int = 54
 
-def close(param) -> None:
-    """Close the window"""
 
+def close(param: Any) -> None:
+    """Close the window"""
     os._exit(0)
 
 
-def key_hook(key, game: GameState, frame, param) -> None:
+def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
     """Menu and banner game options"""
 
     if game.mode == "MENU":
@@ -54,7 +54,9 @@ def key_hook(key, game: GameState, frame, param) -> None:
             game.clear_screen = True
             game.reload_assets = True
             game.show_path = False
-            frame[0] = 0 # Reset the animation
+            frame[0] = 0  # Reset the animation
+            if game.generator is None:
+                return
             game.maze = game.generator.generate_maze()
             game.path = game.generator.solve("bfs")
 
@@ -78,40 +80,34 @@ def key_hook(key, game: GameState, frame, param) -> None:
     if key == KEY_ESC or key == KEY_6:
         os._exit(0)
 
+
 # ---------------------------------
 # TILE SIZE
 # ---------------------------------
 
-def calculate_tile_size(
-    game: GameState) -> int:
+def calculate_tile_size(game: GameState) -> int:
     """
     Dynamically calculate tile size
     so the maze fits the window
     """
-
+    if game.maze is None:
+        return 32
     maze_height = game.maze.grid_height
-
     maze_width = game.maze.grid_width
 
-    tile_width = (
-        WINDOW_WIDTH // maze_width
-    )
+    tile_width = (WINDOW_WIDTH // maze_width)
 
-    tile_height = (
-        WINDOW_HEIGHT // maze_height
-    )
+    tile_height = (WINDOW_HEIGHT // maze_height)
 
-    return min(
-        tile_width,
-        tile_height
-    )
+    return min(tile_width, tile_height)
+
 
 # ---------------------------------
 # GAME WINDOW
 # ---------------------------------
 
 def mlx_window(game: GameState) -> None:
-
+    """Opens the game window"""
     # TILE AND WINDOW SIZE
     tile_size = calculate_tile_size(game)
 
@@ -129,7 +125,7 @@ def mlx_window(game: GameState) -> None:
     )
 
     # ASSETS
-    assets = [None]
+    assets: list[Assets | None] = [None]
     menu_imgs = _prepare_menu_images(mlx, mlx_ptr)
 
     # DRAW
@@ -147,7 +143,8 @@ def mlx_window(game: GameState) -> None:
         None
     )
 
-    def on_loop(param) -> None:
+    def on_loop(param: Any) -> None:
+        """Loop to handle options on window"""
 
         # -------------------------
         # CLEAR WINDOW
@@ -155,16 +152,10 @@ def mlx_window(game: GameState) -> None:
 
         # CLEAR OLD MENU ONLY ONCE
         if game.clear_screen:
-
-            mlx.mlx_clear_window(
-                mlx_ptr,
-                win_ptr
-            )
-
+            mlx.mlx_clear_window(mlx_ptr, win_ptr)
             game.clear_screen = False
 
         if game.mode == "MENU":
-
             mlx.mlx_clear_window(
                 mlx_ptr,
                 win_ptr
@@ -193,6 +184,8 @@ def mlx_window(game: GameState) -> None:
             if game.reload_assets:
                 assets[0] = None
                 game.reload_assets = False
+            if game.theme is None:
+                return
             if assets[0] is None:
 
                 assets[0] = Assets(
@@ -203,10 +196,15 @@ def mlx_window(game: GameState) -> None:
                 )
 
             # SHOW PATH ANIMATION - Option 2
+            if game.path is None:
+                return
+            if game.maze is None:
+                return
+            if assets[0] is None:
+                return
+
             if game.show_path:
-
                 now = time.time()
-
                 if (
                     frame[0] <= len(game.path)
                     and now - last_time[0] >= 0.05

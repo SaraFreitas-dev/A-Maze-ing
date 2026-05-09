@@ -91,7 +91,6 @@ class MazeGenerator:
         self.path = path
         return path
 
-
     def export(self, output_file: str) -> None:
         """
         Exports the information from the maze to

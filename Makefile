@@ -63,6 +63,11 @@ lint:
 		--disallow-untyped-defs \
 		--check-untyped-defs
 
+lint-strict:
+	$(VENV)/bin/flake8 .
+	$(VENV)/bin/mypy . \
+		--strict
+
 # CLEANERS
 clean:
 	find . -name "__pycache__" -exec rm -rf {} +

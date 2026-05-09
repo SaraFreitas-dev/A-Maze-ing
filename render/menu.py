@@ -2,9 +2,8 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 from typing import Any
-from PIL import Image  # type: ignore
-from mlx import Mlx  # type: ignore
-
+from PIL import Image
+from mlx import Mlx
 
 # ── Window ────────────────────────────────────────────────
 WINDOW_WIDTH: int = 1600
@@ -21,7 +20,9 @@ class MenuImages:
     """Pre-loaded MLX image pointer for the menu background."""
     bg: Any = None
 
+
 # ── Asset helpers ─────────────────────────────────────────
+
 def _prepare_menu_images(mlx: Mlx, mlx_ptr: Any) -> MenuImages:
     """Load the menu background XPM, generating it from PNG if needed."""
     os.makedirs("assets/generated", exist_ok=True)
@@ -35,10 +36,11 @@ def _prepare_menu_images(mlx: Mlx, mlx_ptr: Any) -> MenuImages:
         bg_png = bg_xpm.replace(".xpm", ".png")
         if not os.path.exists(bg_png):
             src = Image.open("assets/imgs/menu_background.png")
-            src = src.resize(
-                (WINDOW_WIDTH, WINDOW_HEIGHT), Image.LANCZOS
+            resized_src = src.resize(
+                (WINDOW_WIDTH, WINDOW_HEIGHT),
+                Image.Resampling.LANCZOS
             )
-            src.save(bg_png)
+            resized_src.save(bg_png)
         os.system(f"convert {bg_png} {bg_xpm}")
     imgs.bg, _, _ = mlx.mlx_xpm_file_to_image(mlx_ptr, bg_xpm)
 

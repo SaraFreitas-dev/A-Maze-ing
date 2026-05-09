@@ -4,4 +4,4 @@ exclude =
     .venv,
     __pycache__,
     mlx_CLXV,
-    mypy_cache
+    mypy_cache,

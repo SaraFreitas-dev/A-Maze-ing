@@ -31,4 +31,3 @@ if __name__ == "__main__":
         # mlx_window(maze, path, "gothic")
     except Exception as e:
         print(f"Error: {e}")
-
