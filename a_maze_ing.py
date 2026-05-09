@@ -19,12 +19,11 @@ if __name__ == "__main__":
         path = mazegen.solve("bfs")
 
         game = GameState()
+        game.maze = maze
+        game.path = path
+        game.generator = mazegen
 
-        mlx_window(
-            maze,
-            path,
-            game
-        )
+        mlx_window(game)
         # run_app(maze, path)
         # mazegen.render(show_path=False)
         # mazegen.export(config["OUTPUT_FILE"])

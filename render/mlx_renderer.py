@@ -24,6 +24,9 @@ KEY_ESC: int = 65307
 KEY_1: int = 49
 KEY_2: int = 50
 KEY_3: int = 51
+KEY_4: int = 52
+KEY_5: int = 53
+KEY_6: int = 54
 
 def close(param) -> None:
     """Close the window"""
@@ -45,12 +48,34 @@ def key_hook(key, game: GameState, frame, param) -> None:
             game.clear_screen = True
 
     elif game.mode == "GAME":
-        # SHOW PATH ANIMATION
+        # STATIC ENTRY ON THE GAME
+        if key == KEY_1:
+            game.mode = "GAME"
+            game.clear_screen = True
+            game.reload_assets = True
+            game.show_path = False
+            frame[0] = 0 # Reset the animation
+            game.maze = game.generator.generate_maze()
+            game.path = game.generator.solve("bfs")
+
+        # 2 - SHOW PATH ANIMATION
         if key == KEY_2:
             game.show_path = True
             # Restart animation
             frame[0] = 0
-    if key == KEY_ESC:
+
+        # 5 - CHANGE THEME
+        elif key == KEY_5:
+            game.clear_screen = True
+            game.reload_assets = True
+            if game.theme == "normal":
+                game.theme = "gothic"
+            else:
+                game.theme = "normal"
+            game.show_path = False
+
+    # ESC | 6 - QUIT GAME
+    if key == KEY_ESC or key == KEY_6:
         os._exit(0)
 
 # ---------------------------------
@@ -58,15 +83,15 @@ def key_hook(key, game: GameState, frame, param) -> None:
 # ---------------------------------
 
 def calculate_tile_size(
-    maze: Maze) -> int:
+    game: GameState) -> int:
     """
     Dynamically calculate tile size
     so the maze fits the window
     """
 
-    maze_height = maze.grid_height
+    maze_height = game.maze.grid_height
 
-    maze_width = maze.grid_width
+    maze_width = game.maze.grid_width
 
     tile_width = (
         WINDOW_WIDTH // maze_width
@@ -85,13 +110,10 @@ def calculate_tile_size(
 # GAME WINDOW
 # ---------------------------------
 
-def mlx_window(maze: Maze, path: list[tuple[int, int]],
-               game: GameState) -> None:
+def mlx_window(game: GameState) -> None:
 
     # TILE AND WINDOW SIZE
-    tile_size = calculate_tile_size(
-        maze
-    )
+    tile_size = calculate_tile_size(game)
 
     # GENERATE ASSETS
     generate_all_assets(tile_size)
@@ -167,7 +189,10 @@ def mlx_window(maze: Maze, path: list[tuple[int, int]],
 
         elif game.mode == "GAME":
 
-            # LOAD ASSETS ONLY ONCE
+            # LOAD ASSETS OR RELOAD (change theme onption)
+            if game.reload_assets:
+                assets[0] = None
+                game.reload_assets = False
             if assets[0] is None:
 
                 assets[0] = Assets(
@@ -183,19 +208,19 @@ def mlx_window(maze: Maze, path: list[tuple[int, int]],
                 now = time.time()
 
                 if (
-                    frame[0] <= len(path)
+                    frame[0] <= len(game.path)
                     and now - last_time[0] >= 0.05
                 ):
 
                     draw_maze(
-                        maze,
+                        game.maze,
                         mlx,
                         mlx_ptr,
                         win_ptr,
                         tile_size,
                         assets[0],
-                        maze.grid,
-                        path[:frame[0]]
+                        game.maze.grid,
+                        game.path[:frame[0]]
                         if frame[0] > 0
                         else None,
                     )
@@ -207,13 +232,13 @@ def mlx_window(maze: Maze, path: list[tuple[int, int]],
             else:
 
                 draw_maze(
-                    maze,
+                    game.maze,
                     mlx,
                     mlx_ptr,
                     win_ptr,
                     tile_size,
                     assets[0],
-                    maze.grid,
+                    game.maze.grid,
                     []
                 )
 
