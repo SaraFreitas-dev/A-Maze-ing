@@ -27,7 +27,7 @@ def convert_to_xpm(png_path: str, xpm_path: str) -> None:
     Convert PNG -> XPM using ImageMagick
     """
 
-    os.system(f"convert {png_path} {xpm_path}")
+    os.system(f"magick {png_path} {xpm_path}")
 
 
 def generate_all_assets(tile_size: int) -> None:
@@ -147,7 +147,7 @@ def generate_all_assets(tile_size: int) -> None:
     if not os.path.exists(normal_trail_xpm):
 
         generate_scaled_asset(
-            "assets/imgs/normal_trail.jpeg",
+            "assets/imgs/normal_trail.png",
             normal_trail_png,
             tile_size)
 

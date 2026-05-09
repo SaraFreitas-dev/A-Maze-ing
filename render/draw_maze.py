@@ -68,13 +68,15 @@ def draw_maze(
 
         for (y, x) in visual_path[:-1]:
             solved_grid[y][x] = 4
+
         current_y, current_x = visual_path[-1]
 
         if (current_y, current_x) == (exit_y, exit_x):
-            solved_grid[current_y][current_x] = 4
             current_y, current_x = door_exit_y, door_exit_x
 
         solved_grid[current_y][current_x] = 3
+
+        #solved_grid[current_y][current_x] = 3
 
     for grid_y, row in enumerate(solved_grid):
         for grid_x, cell in enumerate(row):
@@ -123,4 +125,3 @@ def draw_maze(
                     screen_x,
                     screen_y
                 )
-
