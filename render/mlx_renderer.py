@@ -3,6 +3,8 @@ from render.Assets import Assets
 from mazegen.Maze import Maze
 from render.converter import generate_all_assets
 from render.draw_maze import draw_maze
+from render.menu import (_prepare_menu_images, _draw_menu)
+from render.GameState import GameState
 import os
 import time
 
@@ -11,12 +13,17 @@ import time
 # WINDOW
 # ---------------------------------
 
-WINDOW_WIDTH = 1600
-WINDOW_HEIGHT = 900
+WINDOW_WIDTH: int = 1600
+WINDOW_HEIGHT: int = 900
 
 # ---------------------------------
-# CLOSE WINDOW
+# GAME EVENTS
 # ---------------------------------
+
+KEY_ESC: int = 65307
+KEY_1: int = 49
+KEY_2: int = 50
+KEY_3: int = 51
 
 def close(param) -> None:
     """Close the window"""
@@ -24,13 +31,27 @@ def close(param) -> None:
     os._exit(0)
 
 
-def key_hook(key, param) -> None:
-    """Close with ESC"""
-    ESC_KEY = 65307
+def key_hook(key, game: GameState, frame, param) -> None:
+    """Menu and banner game options"""
 
-    if key == ESC_KEY:
+    if game.mode == "MENU":
+        if key == KEY_1:
+            game.theme = "normal"
+            game.mode = "GAME"
+            game.clear_screen = True
+        elif key == KEY_2:
+            game.theme = "gothic"
+            game.mode = "GAME"
+            game.clear_screen = True
+
+    elif game.mode == "GAME":
+        # SHOW PATH ANIMATION
+        if key == KEY_2:
+            game.show_path = True
+            # Restart animation
+            frame[0] = 0
+    if key == KEY_ESC:
         os._exit(0)
-
 
 # ---------------------------------
 # TILE SIZE
@@ -64,10 +85,8 @@ def calculate_tile_size(
 # GAME WINDOW
 # ---------------------------------
 
-def mlx_window(maze: Maze,
-               path: list[tuple[int, int]],
-               theme: str) -> None:
-
+def mlx_window(maze: Maze, path: list[tuple[int, int]],
+               game: GameState) -> None:
 
     # TILE AND WINDOW SIZE
     tile_size = calculate_tile_size(
@@ -87,37 +106,130 @@ def mlx_window(maze: Maze,
         "A-MAZE-ING"
     )
 
-    mlx.mlx_hook(win_ptr, 33, 0, close, None)
-    mlx.mlx_key_hook(win_ptr, key_hook, None)
-
     # ASSETS
-    assets = Assets(
-        mlx,
-        mlx_ptr,
-        tile_size,
-        theme
-    )
+    assets = [None]
+    menu_imgs = _prepare_menu_images(mlx, mlx_ptr)
 
     # DRAW
     frame = [0]
     last_time = [time.time()]
 
+    mlx.mlx_key_hook(
+        win_ptr,
+        lambda key, param: key_hook(
+            key,
+            game,
+            frame,
+            param
+            ),
+        None
+    )
+
     def on_loop(param) -> None:
-        now = time.time()
-        if (frame[0] <= len(path) and
-            now - last_time[0] >= 0.05):
-            draw_maze(
-                maze,
+
+        # -------------------------
+        # CLEAR WINDOW
+        # -------------------------
+
+        # CLEAR OLD MENU ONLY ONCE
+        if game.clear_screen:
+
+            mlx.mlx_clear_window(
+                mlx_ptr,
+                win_ptr
+            )
+
+            game.clear_screen = False
+
+        if game.mode == "MENU":
+
+            mlx.mlx_clear_window(
+                mlx_ptr,
+                win_ptr
+            )
+
+        # -------------------------
+        # MENU
+        # -------------------------
+
+        if game.mode == "MENU":
+
+            _draw_menu(
                 mlx,
                 mlx_ptr,
                 win_ptr,
-                tile_size,
-                assets,
-                maze.grid,
-                path[:frame[0]] if frame[0] > 0 else None,
+                menu_imgs
             )
-            frame[0] += 1
-            last_time[0] = now
 
-    mlx.mlx_loop_hook(mlx_ptr, on_loop, None)
+        # -------------------------
+        # GAME
+        # -------------------------
+
+        elif game.mode == "GAME":
+
+            # LOAD ASSETS ONLY ONCE
+            if assets[0] is None:
+
+                assets[0] = Assets(
+                    mlx,
+                    mlx_ptr,
+                    tile_size,
+                    game.theme
+                )
+
+            # SHOW PATH ANIMATION - Option 2
+            if game.show_path:
+
+                now = time.time()
+
+                if (
+                    frame[0] <= len(path)
+                    and now - last_time[0] >= 0.05
+                ):
+
+                    draw_maze(
+                        maze,
+                        mlx,
+                        mlx_ptr,
+                        win_ptr,
+                        tile_size,
+                        assets[0],
+                        maze.grid,
+                        path[:frame[0]]
+                        if frame[0] > 0
+                        else None,
+                    )
+
+                    frame[0] += 1
+                    last_time[0] = now
+
+            # STATIC MAZE
+            else:
+
+                draw_maze(
+                    maze,
+                    mlx,
+                    mlx_ptr,
+                    win_ptr,
+                    tile_size,
+                    assets[0],
+                    maze.grid,
+                    []
+                )
+
+    # WINDOW EVENTS
+    mlx.mlx_hook(
+        win_ptr,
+        33,
+        0,
+        close,
+        None
+    )
+
+    mlx.mlx_loop_hook(
+        mlx_ptr,
+        on_loop,
+        None
+    )
+
     mlx.mlx_loop(mlx_ptr)
