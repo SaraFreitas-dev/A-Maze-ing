@@ -1,6 +1,7 @@
 from mazegen.MazeGenerator import MazeGenerator
 from parsing.config_parser import parse_config, get_config_path, convert_config
 from render.mlx_renderer import mlx_window
+from render.menu import run_app
 
 
 if __name__ == "__main__":
@@ -16,10 +17,11 @@ if __name__ == "__main__":
                                 config.get("SEED"))
         maze = mazegen.generate_maze()
         path = mazegen.solve("bfs")
+        run_app(maze, path)
         # mazegen.render(show_path=False)
-        mazegen.export(config["OUTPUT_FILE"])
+        # mazegen.export(config["OUTPUT_FILE"])
         # print_maze_file(config["OUTPUT_FILE"])
-        mlx_window(maze, path, "gothic")
+        # mlx_window(maze, path, "gothic")
     except Exception as e:
         print(f"Error: {e}")
 

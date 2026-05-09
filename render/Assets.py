@@ -10,13 +10,6 @@ class Assets:
                  mlx_ptr: Any,
                  tile_size: int,
                  theme: str) -> None:
-        # MENU BACKGROUND
-        self.title_size = tile_size
-        self.menu_background, _, _ = mlx.mlx_xpm_file_to_image(
-            mlx_ptr,
-            "assets/imgs/menu_background.xpm"
-        )
-
         # WALL
         if theme == "normal":
             wall_file = "light_wall"

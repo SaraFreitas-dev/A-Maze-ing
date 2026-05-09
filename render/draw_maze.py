@@ -3,6 +3,14 @@ from render.Assets import Assets
 from mazegen.Maze import Maze
 
 
+# ---------------------------------
+# WINDOW
+# ---------------------------------
+
+WINDOW_WIDTH = 1600
+WINDOW_HEIGHT = 900
+
+
 def draw_maze(
     maze: Maze,
     mlx: Mlx,
@@ -78,9 +86,14 @@ def draw_maze(
 
     for grid_y, row in enumerate(solved_grid):
         for grid_x, cell in enumerate(row):
+
+            # Offset to center the maze
+            offset_x = (WINDOW_WIDTH - (maze.grid_width * tile_size)) // 2
+            offset_y = (WINDOW_HEIGHT - (maze.grid_height * tile_size)) // 2
+
             # Convert grid -> pixels
-            screen_x = grid_x * tile_size
-            screen_y = grid_y * tile_size
+            screen_x = offset_x + (grid_x * tile_size)
+            screen_y = offset_y + (grid_y * tile_size)
 
 
             # BASE TILE

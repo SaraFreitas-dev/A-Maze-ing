@@ -11,8 +11,8 @@ import time
 # WINDOW
 # ---------------------------------
 
-MAX_WINDOW_WIDTH = 1600
-MAX_WINDOW_HEIGHT = 900
+WINDOW_WIDTH = 1600
+WINDOW_HEIGHT = 900
 
 # ---------------------------------
 # CLOSE WINDOW
@@ -48,11 +48,11 @@ def calculate_tile_size(
     maze_width = maze.grid_width
 
     tile_width = (
-        MAX_WINDOW_WIDTH // maze_width
+        WINDOW_WIDTH // maze_width
     )
 
     tile_height = (
-        MAX_WINDOW_HEIGHT // maze_height
+        WINDOW_HEIGHT // maze_height
     )
 
     return min(
@@ -61,59 +61,36 @@ def calculate_tile_size(
     )
 
 # ---------------------------------
-# MAIN WINDOW
+# GAME WINDOW
 # ---------------------------------
 
 def mlx_window(maze: Maze,
                path: list[tuple[int, int]],
                theme: str) -> None:
 
-    # -------------------------
-    # TILE AND WINDOW SIZE
-    # -------------------------
 
+    # TILE AND WINDOW SIZE
     tile_size = calculate_tile_size(
         maze
     )
 
-    window_width = (
-        maze.grid_width * tile_size
-    )
-
-    window_height = (
-        maze.grid_height * tile_size
-    )
-
-    # -------------------------
     # GENERATE ASSETS
-    # -------------------------
+    generate_all_assets(tile_size)
 
-    generate_all_assets(
-        tile_size
-    )
-
-    # -------------------------
     # MLX
-    # -------------------------
-
     mlx = Mlx()
-
     mlx_ptr = mlx.mlx_init()
-
     win_ptr = mlx.mlx_new_window(
         mlx_ptr,
-        window_width,
-        window_height,
+        WINDOW_WIDTH,
+        WINDOW_HEIGHT,
         "A-MAZE-ING"
     )
 
     mlx.mlx_hook(win_ptr, 33, 0, close, None)
     mlx.mlx_key_hook(win_ptr, key_hook, None)
 
-    # -------------------------
     # ASSETS
-    # -------------------------
-
     assets = Assets(
         mlx,
         mlx_ptr,
@@ -121,10 +98,7 @@ def mlx_window(maze: Maze,
         theme
     )
 
-    # -------------------------
     # DRAW
-    # -------------------------
-
     frame = [0]
     last_time = [time.time()]
 
