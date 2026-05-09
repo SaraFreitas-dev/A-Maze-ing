@@ -2,4 +2,3 @@ venv
 __pycache__
 .mypy_cache
 assets/generated
-mlx_CLXV
