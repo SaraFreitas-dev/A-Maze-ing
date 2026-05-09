@@ -82,14 +82,9 @@ def draw_maze(
             screen_x = grid_x * tile_size
             screen_y = grid_y * tile_size
 
-            # ENTRY
-            if (grid_x,grid_y) == (door_entry_x, door_entry_y):
-                tile = assets.duck
 
-            # EXIT
-            elif (grid_x, grid_y) == (door_exit_x, door_exit_y):
-                tile = assets.duck
-            elif cell == 3:
+            # BASE TILE
+            if cell == 3:
                 tile = assets.duck
             elif cell == 0:
                 tile = assets.floor
@@ -100,7 +95,7 @@ def draw_maze(
             else:
                 tile = assets.trail
 
-            # DRAW TILE
+            # DRAW BASE
             mlx.mlx_put_image_to_window(
                 mlx_ptr,
                 win_ptr,
@@ -108,4 +103,24 @@ def draw_maze(
                 screen_x,
                 screen_y
             )
+
+            # EXIT
+            if (grid_x, grid_y) == (door_exit_x, door_exit_y):
+                mlx.mlx_put_image_to_window(
+                    mlx_ptr,
+                    win_ptr,
+                    assets.exit,
+                    screen_x,
+                    screen_y
+                )
+
+            # ENTRY
+            if (grid_x, grid_y) == (door_entry_x, door_entry_y):
+                mlx.mlx_put_image_to_window(
+                    mlx_ptr,
+                    win_ptr,
+                    assets.duck,
+                    screen_x,
+                    screen_y
+                )
 
