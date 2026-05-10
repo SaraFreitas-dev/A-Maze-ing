@@ -24,8 +24,8 @@ Generate procedural mazes, visualize BFS solving algorithms, switch themes, and 
 
 # 📚 Table of Contents
 
-- [About](#about)
 - [Project Preview](#project-preview)
+- [Description](#Description)
 - [Project Structure](#project-structure)
   - [assets](#assets)
   - [mazegen](#mazegen)
@@ -36,7 +36,7 @@ Generate procedural mazes, visualize BFS solving algorithms, switch themes, and 
 - [Algorithms](#algorithms)
   - [DFS - Maze Generation](#dfs--maze-generation)
   - [BFS - Path Solver](#bfs--path-solver)
-- [Installation](#installation)
+- [Installation Instructions](#Installation-Instructions)
 - [Configuration File](#configuration-file)
 - [Game Controls](#game-controls)
 - [Maze Rules](#maze-rules)
@@ -45,6 +45,7 @@ Generate procedural mazes, visualize BFS solving algorithms, switch themes, and 
 - [Technical Notes](#technical-notes)
 - [Future Improvements](#future-improvements)
 - [Authors](#authors)
+- [Resources](#Resources)
 - [Additional Documentation](#additional-documentation)
 
 ---
@@ -75,7 +76,7 @@ Generate procedural mazes, visualize BFS solving algorithms, switch themes, and 
 
 ---
 
-# About
+# Description
 
 A-MAZE-ING is a procedural maze generator developed in Python using the MiniLibX graphics library.
 
@@ -118,6 +119,8 @@ a-maze-ing/
 ├── pyproject.toml
 └── README.md
 ```
+
+The project structure separates rendering, parsing, generation, and utility systems to simplify maintenance and future extensions.
 
 ---
 
@@ -220,6 +223,11 @@ Result:
 - no isolated zones
 - procedural random generation
 
+# Why DFS
+
+DFS was chosen for maze generation because it naturally creates long corridors and fully connected mazes while remaining relatively simple and efficient to implement.
+The recursive backtracking approach also fits procedural generation very well and guarantees that every cell becomes reachable.
+
 ---
 
 ## BFS — Path Solver
@@ -237,7 +245,7 @@ The BFS system stores:
 
 ---
 
-# Installation
+# Installation Instructions
 
 ## Requirements
 
@@ -317,6 +325,11 @@ PERFECT=True
 SEED=42
 ```
 Obs. Commented lines start with a #
+Rules:
+- ENTRY and EXIT must be placed on maze borders
+- WIDTH and HEIGHT must be positive integers
+- PERFECT defines whether the maze has a single solution
+- SEED allows deterministic maze generation
 
 ---
 
@@ -421,10 +434,43 @@ The project uses:
 
 # Authors
 
-🦆 Sara  
+🦆 Sara
+- MLX rendering system
+- BFS animations
+- Algorithm creations
+- Parsing - config
+- theme switching
+- maze visual integration
+- project architecture
+
 🎮 Bruno
+- menu systems
+- Banner options and interactions
+- MLX rendering system
+- gameplay interactions
+- README and documentation
+- testing and integration
 
 Made at 42 School.
+
+---
+
+# Resources
+
+Main resources used during development:
+
+- Python documentation
+- MiniLibX documentation
+- Pillow documentation
+- BFS and DFS algorithm references and videos
+- 42 intra subject documentation
+
+AI was used mainly for:
+- architecture brainstorming
+- debugging assistance
+- README structure improvements
+- asset workflow guidance
+- MLX integration troubleshooting
 
 ---
 
