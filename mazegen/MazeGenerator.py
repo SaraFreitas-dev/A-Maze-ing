@@ -68,7 +68,7 @@ class MazeGenerator:
                 if not self.perfect:
                     break_walls(maze, logo_pos)
 
-                path = bfs_solve_maze(maze)
+                path, _ = bfs_solve_maze(maze)
                 if path:
                     self.logo_pos = logo_pos
                     self.maze = maze
