@@ -4,16 +4,6 @@
 
 ---
 
-<div align="center">
-
-# ⭐ Support The Project
-
-If you enjoyed this project, consider giving it a star on GitHub 💛
-
-<a href="https://github.com/SaraFreitas-dev/A-Maze-ing">
-  <img src="https://img.shields.io/github/stars/SaraFreitas-dev/A-Maze-ing?style=for-the-badge">
-</a>
-
 </div>
 
 <div align="center">
