@@ -13,9 +13,8 @@ def generate_scaled_asset(input_path: str,
     image = Image.open(input_path)
 
     # Resize image
-    resized_image = image.resize(
-        (tile_size, tile_size),
-        Image.Resampling.NEAREST)
+    resized_image = image.resize((tile_size, tile_size),
+                                 Image.Resampling.NEAREST)
 
     # Save resized PNG
     resized_image.save(output_path)
@@ -73,8 +72,7 @@ def generate_all_assets(tile_size: int) -> None:
             resized_light_wall_png,
             tile_size)
 
-        convert_to_xpm(
-            resized_light_wall_png, light_wall_xpm)
+        convert_to_xpm(resized_light_wall_png, light_wall_xpm)
 
     # -------------------------
 
@@ -91,8 +89,7 @@ def generate_all_assets(tile_size: int) -> None:
             resized_dark_42_png,
             tile_size)
 
-        convert_to_xpm(
-            resized_dark_42_png, wall_dark_42_42_xpm)
+        convert_to_xpm(resized_dark_42_png, wall_dark_42_42_xpm)
 
     # -------------------------
     # FLOOR
@@ -111,8 +108,7 @@ def generate_all_assets(tile_size: int) -> None:
             resized_normal_floor_png,
             tile_size)
 
-        convert_to_xpm(
-            resized_normal_floor_png, normal_floor_xpm)
+        convert_to_xpm(resized_normal_floor_png, normal_floor_xpm)
 
     # --------------------------
 
@@ -184,8 +180,7 @@ def generate_all_assets(tile_size: int) -> None:
             tile_size
         )
 
-        convert_to_xpm(
-            resized_normal_exit_png, normal_exit_xpm)
+        convert_to_xpm(resized_normal_exit_png, normal_exit_xpm)
 
         resized_normal_exit_png = (
             f"assets/generated/normal_exit_{tile_size}.png")

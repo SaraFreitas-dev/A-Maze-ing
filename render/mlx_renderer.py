@@ -58,18 +58,28 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
             if game.generator is None:
                 return
             game.maze = game.generator.generate_maze()
-            game.path = game.generator.solve("bfs")
+            game.path, game.explored = game.generator.solve("bfs")
 
         # 2 - SHOW PATH ANIMATION
         if key == KEY_2:
             game.show_path = True
+            game.animate_bfs = False
             # Restart animation
+            frame[0] = 0
+
+        # 3 - SHOW PATH FINDER
+        if key == KEY_3:
+            game.show_path = False
+            game.animate_bfs = True
             frame[0] = 0
 
         # 5 - CHANGE THEME
         elif key == KEY_5:
             game.clear_screen = True
             game.reload_assets = True
+            game.show_path = False
+            game.animate_bfs = False
+            game.show_duck = True
             if game.theme == "normal":
                 game.theme = "gothic"
             else:
@@ -195,14 +205,16 @@ def mlx_window(game: GameState) -> None:
                     game.theme
                 )
 
-            # SHOW PATH ANIMATION - Option 2
             if game.path is None:
                 return
             if game.maze is None:
                 return
+            if game.explored is None:
+                return
             if assets[0] is None:
                 return
 
+            # SHOW PATH ANIMATION - Option 2
             if game.show_path:
                 now = time.time()
                 if (
@@ -221,6 +233,32 @@ def mlx_window(game: GameState) -> None:
                         game.path[:frame[0]]
                         if frame[0] > 0
                         else None,
+                        show_duck=True
+                    )
+
+                    frame[0] += 1
+                    last_time[0] = now
+
+            # SHOW PATH FINDER BFS ANIMATION - Option 3
+            elif game.animate_bfs:
+                now = time.time()
+                if (
+                    frame[0] <= len(game.explored)
+                    and now - last_time[0] >= 0.05
+                ):
+
+                    draw_maze(
+                        game.maze,
+                        mlx,
+                        mlx_ptr,
+                        win_ptr,
+                        tile_size,
+                        assets[0],
+                        game.maze.grid,
+                        game.explored[:frame[0]]
+                        if frame[0] > 0
+                        else None,
+                        show_duck=False
                     )
 
                     frame[0] += 1
@@ -237,7 +275,8 @@ def mlx_window(game: GameState) -> None:
                     tile_size,
                     assets[0],
                     game.maze.grid,
-                    []
+                    [],
+                    show_duck=True
                 )
 
     # WINDOW EVENTS

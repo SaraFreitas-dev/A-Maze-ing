@@ -10,9 +10,11 @@ class GameState:
         self.show_path: bool = False
         self.animate_bfs: bool = False
         self.playing: bool = False
+        self.show_duck: bool = True
 
         self.clear_screen: bool = False
         self.reload_assets: bool = False
         self.maze: Maze | None = None
         self.path: list[tuple[int, int]] | None = None
+        self.explored: list[tuple[int, int]] | None = None
         self.generator: MazeGenerator | None = None

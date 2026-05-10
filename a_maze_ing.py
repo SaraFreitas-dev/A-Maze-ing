@@ -16,11 +16,12 @@ if __name__ == "__main__":
                                 config["PERFECT"],
                                 config.get("SEED"))
         maze = mazegen.generate_maze()
-        path = mazegen.solve("bfs")
+        path, explored = mazegen.solve("bfs")
 
         game = GameState()
         game.maze = maze
         game.path = path
+        game.explored = explored
         game.generator = mazegen
 
         mlx_window(game)

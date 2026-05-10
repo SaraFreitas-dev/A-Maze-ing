@@ -20,10 +20,11 @@ def draw_maze(
     tile_size: int,
     assets: Assets,
     grid: list[list[int]],
-    path: list[tuple[int, int]] | None = None
+    path: list[tuple[int, int]] | None = None,
+    show_duck: bool = True
 ) -> None:
     """
-    Draw only the maze
+    Draw the maze with mlx
     """
 
     # ---------------------------------
@@ -35,7 +36,6 @@ def draw_maze(
 
     entry_x = entry_x * 2 + 1
     entry_y = entry_y * 2 + 1
-
     exit_x = exit_x * 2 + 1
     exit_y = exit_y * 2 + 1
 
@@ -83,7 +83,9 @@ def draw_maze(
         if (current_y, current_x) == (exit_y, exit_x):
             solved_grid[current_y][current_x] = 4
             current_y, current_x = door_exit_y, door_exit_x
-        solved_grid[current_y][current_x] = 3
+        
+        if show_duck:
+            solved_grid[current_y][current_x] = 3
 
     for grid_y, row in enumerate(solved_grid):
         for grid_x, cell in enumerate(row):
