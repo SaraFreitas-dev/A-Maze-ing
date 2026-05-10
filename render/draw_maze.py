@@ -83,7 +83,7 @@ def draw_maze(
         if (current_y, current_x) == (exit_y, exit_x):
             solved_grid[current_y][current_x] = 4
             current_y, current_x = door_exit_y, door_exit_x
-        
+
         if show_duck:
             solved_grid[current_y][current_x] = 3
 

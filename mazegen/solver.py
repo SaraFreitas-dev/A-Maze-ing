@@ -2,9 +2,8 @@ from collections import deque
 from mazegen.Maze import Maze
 
 
-def bfs_solve_maze(maze: Maze) -> tuple[
-    list[tuple[int, int]],
-    list[tuple[int, int]]]:
+def bfs_solve_maze(maze: Maze) -> tuple[list[tuple[int, int]],
+                                        list[tuple[int, int]]]:
     """
     Finds the shortest path to solve the maze
     With Breadth First Search (BFS)

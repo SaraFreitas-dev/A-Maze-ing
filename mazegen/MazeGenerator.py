@@ -79,8 +79,8 @@ class MazeGenerator:
         except (KeyError, Exception) as e:
             raise ValueError(f"generate_maze(): {e}")
 
-    def solve(self, algorithm: str) -> tuple[
-        list[tuple[int, int]], list[tuple[int, int]]]:
+    def solve(self, algorithm: str) -> tuple[list[tuple[int, int]],
+                                             list[tuple[int, int]]]:
         """
         Checks for the algorithm to apply,
         and uses it to solve the maze
