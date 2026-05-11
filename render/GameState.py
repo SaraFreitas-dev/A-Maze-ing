@@ -11,6 +11,9 @@ class GameState:
         self.animate_bfs: bool = False
         self.playing: bool = False
         self.show_duck: bool = True
+        #Bruno -> Track player is in maze grid
+        self.player_x: int = 0
+        self.player_y: int = 0
 
         self.clear_screen: bool = False
         self.reload_assets: bool = False
