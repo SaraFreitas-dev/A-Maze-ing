@@ -297,7 +297,8 @@ def mlx_window(game: GameState) -> None:
                         game.path[:frame[0]]
                         if frame[0] > 0
                         else None,
-                        show_duck=True
+                        show_duck=True,
+                        duck_position=None
                     )
 
                     frame[0] += 1
@@ -322,7 +323,8 @@ def mlx_window(game: GameState) -> None:
                         game.explored[:frame[0]]
                         if frame[0] > 0
                         else None,
-                        show_duck=False
+                        show_duck=False,
+                        duck_position=None
                     )
 
                     frame[0] += 1
@@ -331,17 +333,24 @@ def mlx_window(game: GameState) -> None:
             # STATIC MAZE
             else:
 # Bruno -> refresh duck on player movement
-                draw_maze(
-                    game.maze,
-                    mlx,
-                    mlx_ptr,
-                    win_ptr,
-                    tile_size,
-                    assets[0],
-                    game.maze.grid,
-                    [],
-                    show_duck=True
-                )
+        # Determine duck position for player mode
+                  duck_position = None
+                  if game.playing:
+                      duck_position = (game.player_y * 2 + 1, game.player_x * 2
+   + 1)
+
+                  draw_maze(
+                      game.maze,
+                      mlx,
+                      mlx_ptr,
+                      win_ptr,
+                      tile_size,
+                      assets[0],
+                      game.maze.grid,
+                      [],
+                      show_duck=True,
+                      duck_position=duck_position
+                  )
 
     # WINDOW EVENTS
     mlx.mlx_hook(
