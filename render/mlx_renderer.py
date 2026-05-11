@@ -78,6 +78,17 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
             game.animate_bfs = True
             frame[0] = 0
 
+    #Bruno -> PLAYER GAME MODE
+        # 4 - PLAYER MODE
+        elif key == KEY_4:
+            game.playing = True
+            game.show_path = False
+            game.animate_bfs = False
+            game.show_duck = True
+            if game.maze is not None:
+                game.player_x, game.player_y = game.maze.entry
+            frame[0] = 0
+
         # 5 - CHANGE THEME
         elif key == KEY_5:
             game.clear_screen = True
