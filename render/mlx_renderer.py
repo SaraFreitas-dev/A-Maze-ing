@@ -136,6 +136,21 @@ def handle_player_movement(key: int, game: GameState) -> None:
             print("🎉 Congratulations! You reached the exit!")
 
 
+def is_valid_move(x: int, y: int, maze: Maze) -> bool:
+    """Check if move is valid (not wall for previous player handler)"""
+    #Convert logical cords to grid cords
+    grid_x = x * 2 + 1
+    grid_y = y * 2 + 1
+
+    #Check bounds
+    if grid_x < 0 or grid_x >= maze.grid_width:
+        return False
+    if grid_y < 0 or grid_y >= maze.grid_height:
+        return False
+
+    #Check if its wall
+    return maze.grid[grid_y][grid_x] == 0
+
 # ---------------------------------
 # TILE SIZE
 # ---------------------------------
