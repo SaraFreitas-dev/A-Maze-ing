@@ -5,6 +5,7 @@ from render.converter import generate_all_assets
 from render.draw_maze import draw_maze
 from render.menu import (_prepare_menu_images, _draw_menu)
 from render.GameState import GameState
+from mazegen.Maze import Maze #Bruno -> Added so is_valid_move works
 import os
 import time
 
