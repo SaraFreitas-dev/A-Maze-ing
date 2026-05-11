@@ -27,6 +27,11 @@ KEY_3: int = 51
 KEY_4: int = 52
 KEY_5: int = 53
 KEY_6: int = 54
+#Bruno -> Player Movement
+KEY_UP: int = 65362
+KEY_DOWN: int = 65364
+KEY_LEFT: int = 65361
+KEY_RIGHT: int = 65363
 
 
 def close(param: Any) -> None:
