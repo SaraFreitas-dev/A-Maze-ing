@@ -107,6 +107,35 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
         os._exit(0)
 
 
+#Bruno -> Player Movement Handler
+
+def handle_player_movement(key: int, game: GameState) -> None:
+    """Handle arrow key movement for player mode"""
+    if not game.playing or game.maze is None:
+        return
+
+    #Calculating position everytime key pressed
+    new_x, new_y = game.player_x, game.player_y
+
+    if key == KEY_UP:
+        new_y -= 1
+    elif key == KEY_DOWN:
+        new_y += 1
+    elif key == KEY_LEFT:
+        new_x -= 1
+    elif key == KEY_RIGHT:
+        new_x += 1
+
+    # Check if new position is valid (within bounds and not a wall)
+    if is_valid_move(new_x, new_y, game.maze):
+        game.player_x = new_x
+        game.player_y = new_y
+
+        #Check if exit is already reached
+        if (new_x, new_y) == game.maze.exit:
+            print("🎉 Congratulations! You reached the exit!")
+
+
 # ---------------------------------
 # TILE SIZE
 # ---------------------------------
