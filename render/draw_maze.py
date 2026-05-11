@@ -86,7 +86,10 @@ def draw_maze(
             solved_grid[current_y][current_x] = 4
             current_y, current_x = door_exit_y, door_exit_x
 
-        if show_duck:
+        if duck_position is not None:
+            duck_y, duck_x = duck_position
+            solved_grid[duck_y][duck_x] = 3
+        elif show_duck:
             solved_grid[current_y][current_x] = 3
 
     for grid_y, row in enumerate(solved_grid):

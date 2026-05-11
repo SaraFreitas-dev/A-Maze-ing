@@ -81,7 +81,7 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
 
     #Bruno -> PLAYER GAME MODE
         # 4 - PLAYER MODE
-        elif key == KEY_4:
+        if key == KEY_4:
             game.playing = True
             game.show_path = False
             game.animate_bfs = False
@@ -91,7 +91,7 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
             frame[0] = 0
 
         # 5 - CHANGE THEME
-        elif key == KEY_5:
+        if key == KEY_5:
             game.clear_screen = True
             game.reload_assets = True
             game.show_path = False
@@ -102,16 +102,13 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
             else:
                 game.theme = "normal"
             game.show_path = False
+        # Handle player movement in player mode
+        if game.playing and key in [KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT]:
+            handle_player_movement(key, game)
 
     # ESC | 6 - QUIT GAME
     if key == KEY_ESC or key == KEY_6:
         os._exit(0)
-
-#Bruno -> Player Movement Handler
-
-    # Handle player movement in player mode
-    if game.playing and key in [KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT]:
-        handle_player_movement(key, game)
 
 
 def handle_player_movement(key: int, game: GameState) -> None:
