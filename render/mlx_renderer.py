@@ -106,8 +106,12 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
     if key == KEY_ESC or key == KEY_6:
         os._exit(0)
 
-
 #Bruno -> Player Movement Handler
+
+    # Handle player movement in player mode
+    if game.playing and key in [KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT]:
+        handle_player_movement(key, game)
+
 
 def handle_player_movement(key: int, game: GameState) -> None:
     """Handle arrow key movement for player mode"""
