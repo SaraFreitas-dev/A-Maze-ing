@@ -330,7 +330,7 @@ def mlx_window(game: GameState) -> None:
 
             # STATIC MAZE
             else:
-
+# Bruno -> refresh duck on player movement
                 draw_maze(
                     game.maze,
                     mlx,

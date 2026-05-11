@@ -21,7 +21,9 @@ def draw_maze(
     assets: Assets,
     grid: list[list[int]],
     path: list[tuple[int, int]] | None = None,
-    show_duck: bool = True
+    show_duck: bool = True,
+#Bruno -> created duck position to refresh on player move
+    duck_position: tuple[int, int] | None = None
 ) -> None:
     """
     Draw the maze with mlx
