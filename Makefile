@@ -29,7 +29,15 @@ install: venv
 	$(PIP) install --upgrade pip
 	$(PIP) install -r requirements.txt
 
-	#Bruno -> Updated from convert to magick for modern ImageMagick
+	#Bruno -> Install MLX library from project's .whl file
+	@if [ -f "mlx_CLXV/mlx-2.2-py3-none-any.whl" ]; then \
+		$(PIP) install mlx_CLXV/mlx-2.2-py3-none-any.whl; \
+	else \
+		echo "Building MLX library..."; \
+		cd mlx_CLXV && make && cd ..; \
+		$(PIP) install mlx_CLXV/mlx-2.2-py3-none-any.whl; \
+	fi
+
 	@if ! command -v magick >/dev/null 2>&1; then \
 		echo "ImageMagick not found"; \
 		echo "Checking Homebrew..."; \
@@ -54,7 +62,7 @@ run:
 debug:
 	$(VENV)/bin/python3 -m pdb $(NAME) config.txt
 
-# CHECK FOR NORM ERRORS 
+# CHECK FOR NORM ERRORS
 lint:
 	$(VENV)/bin/flake8 .
 	$(VENV)/bin/mypy . \

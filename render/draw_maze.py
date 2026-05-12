@@ -141,26 +141,36 @@ def draw_maze(
             screen_x = offset_x + (grid_x * tile_size)
             screen_y = offset_y + (grid_y * tile_size)
 
-            # BASE TILE
+            #Bruno -> draw floor first for duck positions
             if cell == 3:
-                tile = assets.duck
+                base_tile = assets.floor
             elif cell == 0:
-                tile = assets.floor
+                base_tile = assets.floor
             elif cell == 1:
-                tile = assets.wall
+                base_tile = assets.wall
             elif cell == 2:
-                tile = assets.wall_42
+                base_tile = assets.wall_42
             else:
-                tile = assets.trail
+                base_tile = assets.trail
 
-            # DRAW BASE
+            #Bruno -> draw base tile
             mlx.mlx_put_image_to_window(
                 mlx_ptr,
                 win_ptr,
-                tile,
+                base_tile,
                 screen_x,
                 screen_y
             )
+
+            #Bruno -> draw duck on top
+            if cell == 3:
+                mlx.mlx_put_image_to_window(
+                    mlx_ptr,
+                    win_ptr,
+                    assets.duck,
+                    screen_x,
+                    screen_y
+                )
 
             # EXIT
             if (grid_x, grid_y) == (door_exit_x, door_exit_y):
