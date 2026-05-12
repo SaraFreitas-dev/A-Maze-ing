@@ -41,7 +41,8 @@ def _prepare_menu_images(mlx: Mlx, mlx_ptr: Any) -> MenuImages:
                 Image.Resampling.LANCZOS
             )
             resized_src.save(bg_png)
-        os.system(f"convert {bg_png} {bg_xpm}")
+        #Bruno -> Updated from convert to magick for modern ImageMagick
+        os.system(f"magick {bg_png} {bg_xpm}")
     imgs.bg, _, _ = mlx.mlx_xpm_file_to_image(mlx_ptr, bg_xpm)
 
     return imgs

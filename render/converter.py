@@ -25,7 +25,8 @@ def convert_to_xpm(png_path: str, xpm_path: str) -> None:
     Convert PNG -> XPM using ImageMagick
     """
 
-    os.system(f"convert {png_path} {xpm_path}")
+    #Bruno -> Updated from convert to magick for modern ImageMagick
+    os.system(f"magick {png_path} {xpm_path}")
 
 
 def generate_all_assets(tile_size: int) -> None:

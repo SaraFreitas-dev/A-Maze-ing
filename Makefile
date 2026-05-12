@@ -29,7 +29,8 @@ install: venv
 	$(PIP) install --upgrade pip
 	$(PIP) install -r requirements.txt
 
-	@if ! command -v convert >/dev/null 2>&1; then \
+	#Bruno -> Updated from convert to magick for modern ImageMagick
+	@if ! command -v magick >/dev/null 2>&1; then \
 		echo "ImageMagick not found"; \
 		echo "Checking Homebrew..."; \
 		if ! command -v brew >/dev/null 2>&1; then \
