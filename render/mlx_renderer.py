@@ -63,6 +63,10 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
             game.playing = False
             game.game_won = False
             frame[0] = 0  # Reset the animation
+            game.player_x, game.player_y = game.maze.entry
+                # Initialize grid position
+            game.player_grid_x = game.player_x * 2 + 1
+            game.player_grid_y = game.player_y * 2 + 1
             if game.generator is None:
                 return
             game.maze = game.generator.generate_maze()
@@ -89,12 +93,28 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
             game.show_path = False
             game.animate_bfs = False
             game.show_duck = True
-            if game.maze is not None:
-                game.player_x, game.player_y = game.maze.entry
-                # Initialize grid position
-                game.player_grid_x = game.player_x * 2 + 1
-                game.player_grid_y = game.player_y * 2 + 1
             frame[0] = 0
+            # Bruno -> Initialize player position to VISUAL door entry position (not logical entry)
+            entry_x, entry_y = game.maze.entry
+            # Convert to grid coordinates
+            grid_entry_x = entry_x * 2 + 1
+            grid_entry_y = entry_y * 2 + 1
+            # Calculate door position (where the visual door is)
+            door_entry_x, door_entry_y = grid_entry_x, grid_entry_y
+            if grid_entry_x == 1:
+                door_entry_x -= 1
+            elif grid_entry_x == game.maze.grid_width - 2:
+                door_entry_x += 1
+            elif grid_entry_y == 1:
+                door_entry_y -= 1
+            else:
+                door_entry_y += 1
+            # Set player to door position
+            game.player_grid_x = door_entry_x
+            game.player_grid_y = door_entry_y
+            # Update logical position (convert back from grid to logical)
+            game.player_x = (door_entry_x - 1) // 2
+            game.player_y = (door_entry_y - 1) // 2
 
         # 5 - CHANGE THEME
         if key == KEY_5:
@@ -151,24 +171,28 @@ def handle_player_movement(key: int, game: GameState) -> None:
     game.player_x = (new_grid_x - 1) // 2
     game.player_y = (new_grid_y - 1) // 2
 
-    # Check if exit reached (logical coordinates)
-    if (game.player_x, game.player_y) == game.maze.exit:
+    # Check if exit reached (check grid position against visual door exit)
+    # Calculate visual door exit position
+    exit_x, exit_y = game.maze.exit
+    grid_exit_x = exit_x * 2 + 1
+    grid_exit_y = exit_y * 2 + 1
+    door_exit_x, door_exit_y = grid_exit_x, grid_exit_y
+    if grid_exit_x == 1:
+        door_exit_x -= 1
+    elif grid_exit_x == game.maze.grid_width - 2:
+        door_exit_x += 1
+    elif grid_exit_y == 1:
+        door_exit_y -= 1
+    else:
+        door_exit_y += 1
+
+    if (game.player_grid_x, game.player_grid_y) == (door_exit_x, door_exit_y):
         print("🎉 Congratulations! You reached the exit!")
         print("🎉 Game Won! Press 1 to play again or ESC to quit.")
         game.game_won = True
         game.playing = False  # Stop player movement
 
 
-def is_valid_grid_move(grid_x: int, grid_y: int, maze: Maze) -> bool:
-    """Bruno -> This function is now unused - logic moved to handle_player_movement"""
-    return True  # Placeholder
-    print(f"🎮 DEBUG: Checking grid position ({grid_x}, {grid_y}) = cell value {maze.grid[grid_y][grid_x] if 0 <= grid_y < maze.grid_height and 0 <= grid_x < maze.grid_width else "OUT_OF_BOUNDS"}")
-    """Bruno -> Check if move is valid in grid coordinates (not wall collision)"""
-    #Bruno -> Check bounds and if position is open (0 = path, 1 = wall)
-    return (0 <= grid_x < maze.grid_width and 
-            0 <= grid_y < maze.grid_height and 
-            maze.grid[grid_y][grid_x] == 0)
-    return maze.grid[grid_y][grid_x] == 0
 
 # ---------------------------------
 # TILE SIZE
