@@ -10,10 +10,14 @@ class GameState:
         self.show_path: bool = False
         self.animate_bfs: bool = False
         self.playing: bool = False
+        self.game_won: bool = False
         self.show_duck: bool = True
-        #Bruno -> Track player is in maze grid
+        #Bruno -> Track player position in logical coordinates
         self.player_x: int = 0
         self.player_y: int = 0
+        #Bruno -> Track actual grid position for smooth movement
+        self.player_grid_x: int = 0
+        self.player_grid_y: int = 0
 
         self.clear_screen: bool = False
         self.reload_assets: bool = False

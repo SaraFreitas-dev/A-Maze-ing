@@ -60,6 +60,8 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
             game.clear_screen = True
             game.reload_assets = True
             game.show_path = False
+            game.playing = False
+            game.game_won = False
             frame[0] = 0  # Reset the animation
             if game.generator is None:
                 return
@@ -82,14 +84,16 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
     #Bruno -> PLAYER GAME MODE
         # 4 - PLAYER MODE
         if key == KEY_4:
-            print(f"🎮 Activating player mode. Entry: {game.maze.entry}")
             game.playing = True
+            game.game_won = False
             game.show_path = False
             game.animate_bfs = False
             game.show_duck = True
             if game.maze is not None:
                 game.player_x, game.player_y = game.maze.entry
-                print(f"🎮 Player position: ({game.player_x}, {game.player_y})")
+                # Initialize grid position
+                game.player_grid_x = game.player_x * 2 + 1
+                game.player_grid_y = game.player_y * 2 + 1
             frame[0] = 0
 
         # 5 - CHANGE THEME
@@ -115,18 +119,12 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
 
 
 def handle_player_movement(key: int, game: GameState) -> None:
-    """Handle arrow key movement for player mode - 2-step grid movement"""
-    if not game.playing or game.maze is None:
+    """Handle arrow key movement for player mode - smooth grid movement"""
+    if not game.playing or game.maze is None or game.game_won:
         return
 
-    print(f"🎮 BEFORE: Player at logical=({game.player_x}, {game.player_y})")
-
-    # Current position in GRID coordinates (like BFS solver)
-    current_grid_x = game.player_x * 2 + 1
-    current_grid_y = game.player_y * 2 + 1
-
-    # Calculate new GRID position (move by 1 in grid first)
-    new_grid_x, new_grid_y = current_grid_x, current_grid_y
+    # Calculate new grid position (move by 1 grid step)
+    new_grid_x, new_grid_y = game.player_grid_x, game.player_grid_y
 
     if key == KEY_UP:
         new_grid_y -= 1
@@ -136,60 +134,29 @@ def handle_player_movement(key: int, game: GameState) -> None:
         new_grid_x -= 1
     elif key == KEY_RIGHT:
         new_grid_x += 1
-
-    print(f"🎮 Step 1: Trying grid=({new_grid_x}, {new_grid_y})")
 
     # Check bounds
     if not (0 <= new_grid_y < game.maze.grid_height and 0 <= new_grid_x < game.maze.grid_width):
-        print("🚫 Step 1 out of bounds")
         return
 
-    # Check if first step hits wall
+    # Check if position is blocked
     if game.maze.grid[new_grid_y][new_grid_x] == 1 or game.maze.grid[new_grid_y][new_grid_x] == 2:
-        print(f"🚫 Step 1 hit wall: {game.maze.grid[new_grid_y][new_grid_x]}")
         return
 
-    print("✅ Step 1 clear")
+    # Update grid position
+    game.player_grid_x = new_grid_x
+    game.player_grid_y = new_grid_y
 
-    # Make second step to reach logical cell position
-    if key == KEY_UP:
-        new_grid_y -= 1
-    elif key == KEY_DOWN:
-        new_grid_y += 1
-    elif key == KEY_LEFT:
-        new_grid_x -= 1
-    elif key == KEY_RIGHT:
-        new_grid_x += 1
+    # Update logical position based on new grid position
+    game.player_x = (new_grid_x - 1) // 2
+    game.player_y = (new_grid_y - 1) // 2
 
-    print(f"🎮 Step 2: Trying grid=({new_grid_x}, {new_grid_y})")
-
-    # Check bounds for second step
-    if not (0 <= new_grid_y < game.maze.grid_height and 0 <= new_grid_x < game.maze.grid_width):
-        print("🚫 Step 2 out of bounds")
-        return
-
-    # Check if second step hits wall
-    if game.maze.grid[new_grid_y][new_grid_x] == 1 or game.maze.grid[new_grid_y][new_grid_x] == 2:
-        print(f"🚫 Step 2 hit wall: {game.maze.grid[new_grid_y][new_grid_x]}")
-        return
-
-    print("✅ Step 2 clear")
-
-    # Convert back to logical coordinates
-    new_logical_x = (new_grid_x - 1) // 2
-    new_logical_y = (new_grid_y - 1) // 2
-
-    # Update player position
-    game.player_x = new_logical_x
-    game.player_y = new_logical_y
-
-    print(f"🎮 AFTER: Player at logical=({game.player_x}, {game.player_y})")
-
-    # Check if exit reached
+    # Check if exit reached (logical coordinates)
     if (game.player_x, game.player_y) == game.maze.exit:
         print("🎉 Congratulations! You reached the exit!")
-    else:
-        print(f"🎯 Not at exit yet. Exit is at: {game.maze.exit}")
+        print("🎉 Game Won! Press 1 to play again or ESC to quit.")
+        game.game_won = True
+        game.playing = False  # Stop player movement
 
 
 def is_valid_grid_move(grid_x: int, grid_y: int, maze: Maze) -> bool:
@@ -384,8 +351,7 @@ def mlx_window(game: GameState) -> None:
         # Determine duck position for player mode
                   duck_position = None
                   if game.playing:
-                      duck_position = (game.player_y * 2 + 1, game.player_x * 2
-   + 1)
+                      duck_position = (game.player_grid_y, game.player_grid_x)
 
                   draw_maze(
                       game.maze,
