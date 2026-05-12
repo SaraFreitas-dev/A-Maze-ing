@@ -64,7 +64,7 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
             game.game_won = False
             frame[0] = 0  # Reset the animation
             game.player_x, game.player_y = game.maze.entry
-                # Initialize grid position
+                # Bruno -> Initialize grid position
             game.player_grid_x = game.player_x * 2 + 1
             game.player_grid_y = game.player_y * 2 + 1
             if game.generator is None:
@@ -94,12 +94,13 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
             game.animate_bfs = False
             game.show_duck = True
             frame[0] = 0
+            # Bruno -> Need to use initialization different from other methods so duck doesnt jump 1 box at pressing 4, maybe correct later if possible, leave it for now
             # Bruno -> Initialize player position to VISUAL door entry position (not logical entry)
             entry_x, entry_y = game.maze.entry
-            # Convert to grid coordinates
+            # Bruno -> Convert to grid coordinates
             grid_entry_x = entry_x * 2 + 1
             grid_entry_y = entry_y * 2 + 1
-            # Calculate door position (where the visual door is)
+            # Bruno -> Calculate door position (where the visual door is)
             door_entry_x, door_entry_y = grid_entry_x, grid_entry_y
             if grid_entry_x == 1:
                 door_entry_x -= 1
@@ -109,10 +110,10 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
                 door_entry_y -= 1
             else:
                 door_entry_y += 1
-            # Set player to door position
+            # Bruno -> Set player to door position
             game.player_grid_x = door_entry_x
             game.player_grid_y = door_entry_y
-            # Update logical position (convert back from grid to logical)
+            # Bruno -> Update logical position (convert back from grid to logical)
             game.player_x = (door_entry_x - 1) // 2
             game.player_y = (door_entry_y - 1) // 2
 
@@ -143,7 +144,7 @@ def handle_player_movement(key: int, game: GameState) -> None:
     if not game.playing or game.maze is None or game.game_won:
         return
 
-    # Calculate new grid position (move by 1 grid step)
+    # Bruno -> Calculate new grid position (move by 1 grid step)
     new_grid_x, new_grid_y = game.player_grid_x, game.player_grid_y
 
     if key == KEY_UP:
@@ -155,24 +156,24 @@ def handle_player_movement(key: int, game: GameState) -> None:
     elif key == KEY_RIGHT:
         new_grid_x += 1
 
-    # Check bounds
+    # Bruno -> Check bounds
     if not (0 <= new_grid_y < game.maze.grid_height and 0 <= new_grid_x < game.maze.grid_width):
         return
 
-    # Check if position is blocked
+    # Bruno -> Check if position is blocked
     if game.maze.grid[new_grid_y][new_grid_x] == 1 or game.maze.grid[new_grid_y][new_grid_x] == 2:
         return
 
-    # Update grid position
+    # Bruno -> Update grid position
     game.player_grid_x = new_grid_x
     game.player_grid_y = new_grid_y
 
-    # Update logical position based on new grid position
+    # Bruno -> Update logical position based on new grid position
     game.player_x = (new_grid_x - 1) // 2
     game.player_y = (new_grid_y - 1) // 2
 
-    # Check if exit reached (check grid position against visual door exit)
-    # Calculate visual door exit position
+    # Bruno -> Check if exit reached (check grid position against visual door exit)
+    # Bruno -> Calculate visual door exit position
     exit_x, exit_y = game.maze.exit
     grid_exit_x = exit_x * 2 + 1
     grid_exit_y = exit_y * 2 + 1
