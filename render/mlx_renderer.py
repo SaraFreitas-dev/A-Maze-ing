@@ -2,10 +2,12 @@ from mlx import Mlx
 from typing import Any
 from render.Assets import Assets
 from render.converter import generate_all_assets
-from render.draw_maze import draw_maze
+#Bruno -> Added helper function imports for door positioning and coordinate conversion
+from render.draw_maze import draw_maze, calculate_door_position, logical_to_grid, grid_to_logical
 from render.menu import (_prepare_menu_images, _draw_menu)
 from render.GameState import GameState
-from mazegen.Maze import Maze #Bruno -> Added so is_valid_move works
+#Bruno -> Added so is_valid_move works
+from mazegen.Maze import Maze
 import os
 import time
 
@@ -64,9 +66,8 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
             game.game_won = False
             frame[0] = 0  # Reset the animation
             game.player_x, game.player_y = game.maze.entry
-                # Bruno -> Initialize grid position
-            game.player_grid_x = game.player_x * 2 + 1
-            game.player_grid_y = game.player_y * 2 + 1
+                # Bruno -> Initialize grid position using utility function
+            game.player_grid_x, game.player_grid_y = logical_to_grid(game.player_x, game.player_y)
             if game.generator is None:
                 return
             game.maze = game.generator.generate_maze()
@@ -95,27 +96,14 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
             game.show_duck = True
             frame[0] = 0
             # Bruno -> Need to use initialization different from other methods so duck doesnt jump 1 box at pressing 4, maybe correct later if possible, leave it for now
-            # Bruno -> Initialize player position to VISUAL door entry position (not logical entry)
+            # Bruno -> Initialize player position to VISUAL door entry position using helper function
             entry_x, entry_y = game.maze.entry
-            # Bruno -> Convert to grid coordinates
-            grid_entry_x = entry_x * 2 + 1
-            grid_entry_y = entry_y * 2 + 1
-            # Bruno -> Calculate door position (where the visual door is)
-            door_entry_x, door_entry_y = grid_entry_x, grid_entry_y
-            if grid_entry_x == 1:
-                door_entry_x -= 1
-            elif grid_entry_x == game.maze.grid_width - 2:
-                door_entry_x += 1
-            elif grid_entry_y == 1:
-                door_entry_y -= 1
-            else:
-                door_entry_y += 1
+            door_entry_x, door_entry_y = calculate_door_position(entry_x, entry_y, game.maze)
             # Bruno -> Set player to door position
             game.player_grid_x = door_entry_x
             game.player_grid_y = door_entry_y
-            # Bruno -> Update logical position (convert back from grid to logical)
-            game.player_x = (door_entry_x - 1) // 2
-            game.player_y = (door_entry_y - 1) // 2
+            # Bruno -> Update logical position using utility function
+            game.player_x, game.player_y = grid_to_logical(door_entry_x, door_entry_y)
 
         # 5 - CHANGE THEME
         if key == KEY_5:
@@ -168,24 +156,12 @@ def handle_player_movement(key: int, game: GameState) -> None:
     game.player_grid_x = new_grid_x
     game.player_grid_y = new_grid_y
 
-    # Bruno -> Update logical position based on new grid position
-    game.player_x = (new_grid_x - 1) // 2
-    game.player_y = (new_grid_y - 1) // 2
+    # Bruno -> Update logical position using utility function
+    game.player_x, game.player_y = grid_to_logical(new_grid_x, new_grid_y)
 
-    # Bruno -> Check if exit reached (check grid position against visual door exit)
-    # Bruno -> Calculate visual door exit position
+    # Bruno -> Check if exit reached using helper function
     exit_x, exit_y = game.maze.exit
-    grid_exit_x = exit_x * 2 + 1
-    grid_exit_y = exit_y * 2 + 1
-    door_exit_x, door_exit_y = grid_exit_x, grid_exit_y
-    if grid_exit_x == 1:
-        door_exit_x -= 1
-    elif grid_exit_x == game.maze.grid_width - 2:
-        door_exit_x += 1
-    elif grid_exit_y == 1:
-        door_exit_y -= 1
-    else:
-        door_exit_y += 1
+    door_exit_x, door_exit_y = calculate_door_position(exit_x, exit_y, game.maze)
 
     if (game.player_grid_x, game.player_grid_y) == (door_exit_x, door_exit_y):
         print("🎉 Congratulations! You reached the exit!")

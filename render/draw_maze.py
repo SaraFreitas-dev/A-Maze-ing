@@ -12,6 +12,45 @@ WINDOW_WIDTH = 1600
 WINDOW_HEIGHT = 900
 
 
+def logical_to_grid(logical_x: int, logical_y: int) -> tuple[int, int]:
+    """
+    Bruno -> Convert logical maze coordinates to grid coordinates.
+    Logical coordinates (0,0) become grid coordinates (1,1).
+    """
+    return logical_x * 2 + 1, logical_y * 2 + 1
+
+
+def grid_to_logical(grid_x: int, grid_y: int) -> tuple[int, int]:
+    """
+    Bruno -> Convert grid coordinates to logical maze coordinates.
+    Grid coordinates (1,1) become logical coordinates (0,0).
+    """
+    return (grid_x - 1) // 2, (grid_y - 1) // 2
+
+
+def calculate_door_position(logical_x: int, logical_y: int, maze: Maze) -> tuple[int, int]:
+    """
+    Bruno -> Calculate the visual door position from logical coordinates.
+    The door is placed 1 cell away from the logical position towards the maze edge.
+    """
+    # Bruno -> Convert logical to grid coordinates using utility function
+    grid_x, grid_y = logical_to_grid(logical_x, logical_y)
+
+    # Bruno -> Calculate door position (offset by 1 towards maze edge)
+    door_x, door_y = grid_x, grid_y
+
+    if grid_x == 1:
+        door_x -= 1
+    elif grid_x == maze.grid_width - 2:
+        door_x += 1
+    elif grid_y == 1:
+        door_y -= 1
+    else:
+        door_y += 1
+
+    return door_x, door_y
+
+
 def draw_maze(
     maze: Maze,
     mlx: Mlx,
@@ -36,10 +75,9 @@ def draw_maze(
     entry_x, entry_y = maze.entry
     exit_x, exit_y = maze.exit
 
-    entry_x = entry_x * 2 + 1
-    entry_y = entry_y * 2 + 1
-    exit_x = exit_x * 2 + 1
-    exit_y = exit_y * 2 + 1
+    # Bruno -> Use utility functions for coordinate conversion
+    entry_x, entry_y = logical_to_grid(entry_x, entry_y)
+    exit_x, exit_y = logical_to_grid(exit_x, exit_y)
 
     door_entry_x, door_entry_y = entry_x, entry_y
     door_exit_x, door_exit_y = exit_x, exit_y
