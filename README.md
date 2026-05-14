@@ -379,6 +379,12 @@ Theme switching dynamically reloads:
 
 # Bonus Features
 
+## Menu
+
+An interactive menu to select between light and dark themes, and also a banner inside the game to show the maze / game options.
+
+---
+
 ## Animated Duck Trail
 
 The duck leaves animated trails while solving the maze.
@@ -394,6 +400,7 @@ Visualizes how BFS explores the maze step by step before discovering the shortes
 ## Dynamic Asset Scaling
 
 Assets are automatically resized to match the maze tile size.
+The images are also converted in real time to xpm thanks to the use of Pillow and Magick.
 
 ---
 
@@ -403,9 +410,9 @@ Switch between normal and gothic themes during gameplay.
 
 ---
 
-## 42 Logo Inside the Maze
+## Play the Maze
 
-The maze generator places a custom 42 logo directly inside the maze structure.
+Instead of using the algorithm, you can play the maze yourself by pressing the arrow keys.
 
 ---
 
@@ -423,12 +430,10 @@ The project uses:
 
 # Future Improvements
 
-- Player movement mode
-- Better end-game animations
 - Sound effects
 - More maze themes
 - Smarter enemy/path systems
-- Save / load mazes
+- Save player movements - score
 - UI improvements
 
 ---
@@ -449,6 +454,7 @@ The project uses:
 - Banner options and interactions
 - MLX rendering system
 - gameplay interactions
+- End play animation - "vortex"
 - README and documentation
 - testing and integration
 
