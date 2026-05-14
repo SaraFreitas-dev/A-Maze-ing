@@ -379,40 +379,46 @@ Theme switching dynamically reloads:
 
 # Bonus Features
 
-## Menu
+## 🎮 Menu
 
 An interactive menu to select between light and dark themes, and also a banner inside the game to show the maze / game options.
 
 ---
 
-## Animated Duck Trail
+## 🦆 Animated Duck Trail
 
 The duck leaves animated trails while solving the maze.
 
 ---
 
-## BFS Exploration Animation
+## 🧠 BFS Exploration Animation
 
 Visualizes how BFS explores the maze step by step before discovering the shortest path.
 
 ---
 
-## Dynamic Asset Scaling
+## 🖼️ Dynamic Asset Scaling
 
 Assets are automatically resized to match the maze tile size.
 The images are also converted in real time to xpm thanks to the use of Pillow and Magick.
 
 ---
 
-## Theme Switching
+## 🌗 Theme Switching
 
 Switch between normal and gothic themes during gameplay.
 
 ---
 
-## Play the Maze
+## 🎯 Play the Maze
 
 Instead of using the algorithm, you can play the maze yourself by pressing the arrow keys.
+
+---
+
+## 🌀 Animated Exit Vortex
+
+When the player reaches the exit, the portal shows a small animated vortex effect.
 
 ---
 
@@ -435,6 +441,7 @@ The project uses:
 - Smarter enemy/path systems
 - Save player movements - score
 - UI improvements
+- Add the DFS animation (showing how the maze is build using this algorithm)
 
 ---
 
@@ -449,7 +456,7 @@ The project uses:
 - maze visual integration
 - project architecture
 
-🎮 Bruno
+🕹️ Bruno
 - menu systems
 - Banner options and interactions
 - MLX rendering system
