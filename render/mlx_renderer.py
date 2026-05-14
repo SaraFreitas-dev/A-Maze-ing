@@ -104,6 +104,8 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
             game.player_grid_y = door_entry_y
             # Bruno -> Update logical position using utility function
             game.player_x, game.player_y = grid_to_logical(door_entry_x, door_entry_y)
+            # Bruno -> Initialize player trail starting at entry door position
+            game.player_path = [(door_entry_y, door_entry_x)]
 
         # 5 - CHANGE THEME
         if key == KEY_5:
@@ -151,6 +153,18 @@ def handle_player_movement(key: int, game: GameState) -> None:
     # Bruno -> Check if position is blocked
     if game.maze.grid[new_grid_y][new_grid_x] == 1 or game.maze.grid[new_grid_y][new_grid_x] == 2:
         return
+
+    # Bruno -> Handle trail/backtracking
+    # If going backwards (to previous position), remove trail
+    if (
+        len(game.player_path) > 1
+        and
+        (new_grid_y, new_grid_x) == game.player_path[-2]
+    ):
+        game.player_path.pop()
+    else:
+        # Add new position to trail
+        game.player_path.append((new_grid_y, new_grid_x))
 
     # Bruno -> Update grid position
     game.player_grid_x = new_grid_x
@@ -362,7 +376,7 @@ def mlx_window(game: GameState) -> None:
                       tile_size,
                       assets[0],
                       game.maze.grid,
-                      [],
+                      game.player_path,
                       show_duck=True,
                       duck_position=duck_position
                   )

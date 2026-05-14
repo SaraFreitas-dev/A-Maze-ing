@@ -18,6 +18,8 @@ class GameState:
         #Bruno -> Track actual grid position for smooth movement
         self.player_grid_x: int = 0
         self.player_grid_y: int = 0
+        #Bruno -> Track player path/trail for backtracking
+        self.player_path: list[tuple[int, int]] = []
 
         self.clear_screen: bool = False
         self.reload_assets: bool = False
