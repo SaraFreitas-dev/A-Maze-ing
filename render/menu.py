@@ -42,12 +42,13 @@ def _prepare_menu_images(mlx: Mlx, mlx_ptr: Any) -> MenuImages:
                 Image.Resampling.LANCZOS
             )
             resized_src.save(bg_png)
-        #Bruno -> Updated from convert to magick for modern ImageMagick
+
+        # Updated from convert to magick for modern ImageMagick
         os.system(f"magick {bg_png} {bg_xpm}")
     imgs.bg, _, _ = mlx.mlx_xpm_file_to_image(mlx_ptr, bg_xpm)
 
     # Load banner image
-    banner_height = 180  # Match BANNER_HEIGHT from draw_maze.py
+    banner_height = 180
     banner_xpm = f"assets/generated/banner_{WINDOW_WIDTH}x{banner_height}.xpm"
     if not os.path.exists(banner_xpm):
         banner_png = banner_xpm.replace(".xpm", ".png")
@@ -56,21 +57,21 @@ def _prepare_menu_images(mlx: Mlx, mlx_ptr: Any) -> MenuImages:
 
             # Smart crop to remove black borders
             # Convert to RGB if needed for consistency
-            if src.mode != 'RGB':
-                src = src.convert('RGB')
+            if src.mode != "RGB":
+                src = src.convert("RGB")  # type: ignore
 
             # Manual crop based on the banner layout we can see
             # The content appears to be in the middle horizontal band
             width, height = src.size
 
             # From the image, the useful content is roughly in the middle third
-            # Let's crop to keep just the menu bar area
-            crop_top = int(height * 0.35)    # Start from about 35% down
+            crop_top = int(height * 0.35)  # Start from about 35% down
             crop_bottom = int(height * 0.65)  # End at about 65% down
-            crop_left = 0                     # Keep full width
+            crop_left = 0  # Keep full width
             crop_right = width
 
-            cropped_src = src.crop((crop_left, crop_top, crop_right, crop_bottom))
+            cropped_src = src.crop((crop_left, crop_top,
+                                    crop_right, crop_bottom))
 
             # Resize with high quality resampling
             resized_src = cropped_src.resize(

@@ -16,7 +16,7 @@ BANNER_HEIGHT = 180  # Height reserved for bottom banner
 
 def logical_to_grid(logical_x: int, logical_y: int) -> tuple[int, int]:
     """
-    Bruno -> Convert logical maze coordinates to grid coordinates.
+    Convert logical maze coordinates to grid coordinates.
     Logical coordinates (0,0) become grid coordinates (1,1).
     """
     return logical_x * 2 + 1, logical_y * 2 + 1
@@ -24,21 +24,25 @@ def logical_to_grid(logical_x: int, logical_y: int) -> tuple[int, int]:
 
 def grid_to_logical(grid_x: int, grid_y: int) -> tuple[int, int]:
     """
-    Bruno -> Convert grid coordinates to logical maze coordinates.
+    Convert grid coordinates to logical maze coordinates.
     Grid coordinates (1,1) become logical coordinates (0,0).
     """
     return (grid_x - 1) // 2, (grid_y - 1) // 2
 
 
-def calculate_door_position(logical_x: int, logical_y: int, maze: Maze) -> tuple[int, int]:
+def calculate_door_position(logical_x: int,
+                            logical_y: int,
+                            maze: Maze) -> tuple[int, int]:
     """
-    Bruno -> Calculate the visual door position from logical coordinates.
-    The door is placed 1 cell away from the logical position towards the maze edge.
+    Calculate the visual door position from logical coordinates.
+    The door is placed 1 cell away from the logical position
+    towards the maze edge.
     """
-    # Bruno -> Convert logical to grid coordinates using utility function
+
+    # Convert logical to grid coordinates using utility function
     grid_x, grid_y = logical_to_grid(logical_x, logical_y)
 
-    # Bruno -> Calculate door position (offset by 1 towards maze edge)
+    # Calculate door position (offset by 1 towards maze edge)
     door_x, door_y = grid_x, grid_y
 
     if grid_x == 1:
@@ -63,9 +67,7 @@ def draw_maze(
     grid: list[list[int]],
     path: list[tuple[int, int]] | None = None,
     show_duck: bool = True,
-#Bruno -> created duck position to refresh on player move
     duck_position: tuple[int, int] | None = None,
-#Bruno -> added exit animation support
     animate_exit: bool = False
 ) -> None:
     """
@@ -79,7 +81,7 @@ def draw_maze(
     entry_x, entry_y = maze.entry
     exit_x, exit_y = maze.exit
 
-    # Bruno -> Use utility functions for coordinate conversion
+    # Use utility functions for coordinate conversion
     entry_x, entry_y = logical_to_grid(entry_x, entry_y)
     exit_x, exit_y = logical_to_grid(exit_x, exit_y)
 
@@ -146,7 +148,7 @@ def draw_maze(
             screen_x = offset_x + (grid_x * tile_size)
             screen_y = offset_y + (grid_y * tile_size)
 
-            #Bruno -> draw floor first for duck positions
+            # draw floor first for duck positions
             if cell == 3:
                 base_tile = assets.floor
             elif cell == 0:
@@ -158,7 +160,7 @@ def draw_maze(
             else:
                 base_tile = assets.trail
 
-            #Bruno -> draw base tile
+            # Draw base tile
             mlx.mlx_put_image_to_window(
                 mlx_ptr,
                 win_ptr,
@@ -167,7 +169,7 @@ def draw_maze(
                 screen_y
             )
 
-            #Bruno -> draw duck on top
+            # Draw duck on top
             if cell == 3:
                 mlx.mlx_put_image_to_window(
                     mlx_ptr,
@@ -179,11 +181,12 @@ def draw_maze(
 
             # EXIT (with animation when duck reaches it)
             if (grid_x, grid_y) == (door_exit_x, door_exit_y):
-                # Bruno -> Exit portal animation when duck reaches exit
                 if animate_exit:
-                    # Alternate between exit and exit2 every 0.3 seconds for animation
-                    animation_frame = int(time.time() * 3.33) % 2  # ~3.33 Hz animation
-                    exit_image = assets.exit2 if animation_frame == 1 else assets.exit
+                    # Alternate between exit & exit2
+                    # every 0.3 seconds for animation
+                    animation_frame = int(time.time() * 3.33) % 2
+                    exit_image = (assets.exit2 if animation_frame == 1
+                                  else assets.exit)
                 else:
                     exit_image = assets.exit
 

@@ -12,16 +12,16 @@ class GameState:
         self.playing: bool = False
         self.game_won: bool = False
         self.show_duck: bool = True
-        #Bruno -> Track player position in logical coordinates
         self.player_x: int = 0
         self.player_y: int = 0
-        #Bruno -> Track actual grid position for smooth movement
+
+        # Track actual grid position for smooth movement
         self.player_grid_x: int = 0
         self.player_grid_y: int = 0
-        #Bruno -> Track player path/trail for backtracking
+        # Track player path/trail for backtracking
         self.player_path: list[tuple[int, int]] = []
 
-        #Bruno -> Track exit animation states for modes 2 and 3
+        # Track exit animation states for modes 2 and 3
         self.path_animation_complete: bool = False
         self.bfs_animation_complete: bool = False
 

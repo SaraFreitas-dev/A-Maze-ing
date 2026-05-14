@@ -24,8 +24,6 @@ def convert_to_xpm(png_path: str, xpm_path: str) -> None:
     """
     Convert PNG -> XPM using ImageMagick
     """
-
-    #Bruno -> Updated from convert to magick for modern ImageMagick
     os.system(f"magick {png_path} {xpm_path}")
 
 

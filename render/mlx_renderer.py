@@ -2,12 +2,12 @@ from mlx import Mlx
 from typing import Any
 from render.Assets import Assets
 from render.converter import generate_all_assets
-#Bruno -> Added helper function imports for door positioning and coordinate conversion
-from render.draw_maze import draw_maze, calculate_door_position, logical_to_grid, grid_to_logical
+from render.draw_maze import (draw_maze,
+                              calculate_door_position,
+                              logical_to_grid,
+                              grid_to_logical)
 from render.menu import (_prepare_menu_images, _draw_menu, _draw_banner)
 from render.GameState import GameState
-#Bruno -> Added so is_valid_move works
-from mazegen.Maze import Maze
 import os
 import time
 
@@ -30,7 +30,6 @@ KEY_3: int = 51
 KEY_4: int = 52
 KEY_5: int = 53
 KEY_6: int = 54
-#Bruno -> Player Movement
 KEY_UP: int = 65362
 KEY_DOWN: int = 65364
 KEY_LEFT: int = 65361
@@ -42,7 +41,9 @@ def close(param: Any) -> None:
     os._exit(0)
 
 
-def key_hook(key: int, game: GameState, frame: list[int], param: Any, mlx: Any = None, mlx_ptr: Any = None, win_ptr: Any = None) -> None:
+def key_hook(key: int, game: GameState, frame: list[int],
+             param: Any, mlx: Any = None, mlx_ptr: Any = None,
+             win_ptr: Any = None) -> None:
     """Menu and banner game options"""
 
     if game.mode == "MENU":
@@ -78,19 +79,29 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any, mlx: Any =
                 game.maze = game.generator.generate_maze()
                 game.path, game.explored = game.generator.solve("bfs")
                 # Reset player to entry
+                if game.maze is None:
+                    return
                 game.player_x, game.player_y = game.maze.entry
-                game.player_grid_x, game.player_grid_y = logical_to_grid(game.player_x, game.player_y)
-            # Bruno -> Clear and sync on game restart to prevent buffer corruption
+                (game.player_grid_x,
+                 game.player_grid_y) = logical_to_grid(game.player_x,
+                                                       game.player_y)
+
+            # Clear and sync on game restart to prevent buffer corruption
             if mlx and mlx_ptr and win_ptr:
                 mlx.mlx_clear_window(mlx_ptr, win_ptr)
                 mlx.mlx_do_sync(mlx_ptr)
             game.show_path = False
             game.playing = False
             game.game_won = False
-            frame[0] = 0  # Reset the animation
+            frame[0] = 0
+            if game.maze is None:
+                return
             game.player_x, game.player_y = game.maze.entry
-                # Bruno -> Initialize grid position using utility function
-            game.player_grid_x, game.player_grid_y = logical_to_grid(game.player_x, game.player_y)
+
+            # Initialize grid position using utility function
+            (game.player_grid_x,
+             game.player_grid_y) = logical_to_grid(game.player_x,
+                                                   game.player_y)
             if game.generator is None:
                 return
             game.maze = game.generator.generate_maze()
@@ -98,7 +109,6 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any, mlx: Any =
 
         # 2 - SHOW PATH ANIMATION
         if key == KEY_2:
-            # Bruno -> Reset for path animation mode
             game.playing = False
             game.game_won = False
             game.show_path = True
@@ -124,34 +134,31 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any, mlx: Any =
             game.bfs_animation_complete = False
             frame[0] = 0  # Restart animation
 
-    #Bruno -> PLAYER GAME MODE
         # 4 - PLAYER MODE
         if key == KEY_4:
-            # Bruno -> Clear before entering player mode to prevent corruption
             if mlx and mlx_ptr and win_ptr:
                 mlx.mlx_clear_window(mlx_ptr, win_ptr)
                 mlx.mlx_do_sync(mlx_ptr)
 
-            # Bruno -> Complete reset for player mode
             game.playing = True
             game.game_won = False
             game.show_path = False
             game.animate_bfs = False
             game.show_duck = True
             frame[0] = 0
-            # Bruno -> Reset animation flags
             game.path_animation_complete = False
             game.bfs_animation_complete = False
-            # Bruno -> Need to use initialization different from other methods so duck doesnt jump 1 box at pressing 4, maybe correct later if possible, leave it for now
-            # Bruno -> Initialize player position to VISUAL door entry position using helper function
+            if game.maze is None:
+                return
             entry_x, entry_y = game.maze.entry
-            door_entry_x, door_entry_y = calculate_door_position(entry_x, entry_y, game.maze)
-            # Bruno -> Set player to door position
+            (door_entry_x, door_entry_y) = calculate_door_position(entry_x,
+                                                                   entry_y,
+                                                                   game.maze)
+
             game.player_grid_x = door_entry_x
             game.player_grid_y = door_entry_y
-            # Bruno -> Update logical position using utility function
-            game.player_x, game.player_y = grid_to_logical(door_entry_x, door_entry_y)
-            # Bruno -> Initialize player trail starting at entry door position
+            game.player_x, game.player_y = grid_to_logical(door_entry_x,
+                                                           door_entry_y)
             game.player_path = [(door_entry_y, door_entry_x)]
 
         # 5 - CHANGE THEME
@@ -181,7 +188,7 @@ def handle_player_movement(key: int, game: GameState) -> None:
     if not game.playing or game.maze is None or game.game_won:
         return
 
-    # Bruno -> Calculate new grid position (move by 1 grid step)
+    # Calculate new grid position (move by 1 grid step)
     new_grid_x, new_grid_y = game.player_grid_x, game.player_grid_y
 
     if key == KEY_UP:
@@ -193,15 +200,19 @@ def handle_player_movement(key: int, game: GameState) -> None:
     elif key == KEY_RIGHT:
         new_grid_x += 1
 
-    # Bruno -> Check bounds
-    if not (0 <= new_grid_y < game.maze.grid_height and 0 <= new_grid_x < game.maze.grid_width):
+    # Check bounds
+    if not (0 <= new_grid_y < game.maze.grid_height and
+            0 <= new_grid_x < game.maze.grid_width):
         return
 
-    # Bruno -> Check if position is blocked
-    if game.maze.grid[new_grid_y][new_grid_x] == 1 or game.maze.grid[new_grid_y][new_grid_x] == 2:
+    # Check if position is blocked
+    if (
+        game.maze.grid[new_grid_y][new_grid_x] == 1
+        or game.maze.grid[new_grid_y][new_grid_x] == 2
+    ):
         return
 
-    # Bruno -> Handle trail/backtracking
+    # Handle trail/backtracking
     # If going backwards (to previous position), remove trail
     if (
         len(game.player_path) > 1
@@ -222,14 +233,15 @@ def handle_player_movement(key: int, game: GameState) -> None:
 
     # Bruno -> Check if exit reached using helper function
     exit_x, exit_y = game.maze.exit
-    door_exit_x, door_exit_y = calculate_door_position(exit_x, exit_y, game.maze)
+    door_exit_x, door_exit_y = calculate_door_position(exit_x,
+                                                       exit_y,
+                                                       game.maze)
 
     if (game.player_grid_x, game.player_grid_y) == (door_exit_x, door_exit_y):
         print("🎉 Congratulations! You reached the exit!")
         print("🎉 Game Won! Press 1 to play again or ESC to quit.")
         game.game_won = True
         game.playing = False  # Stop player movement
-
 
 
 # ---------------------------------
@@ -267,7 +279,6 @@ def mlx_window(game: GameState) -> None:
     # GENERATE ASSETS
     generate_all_assets(tile_size)
 
-    # MLX
     mlx = Mlx()
     mlx_ptr = mlx.mlx_init()
     win_ptr = mlx.mlx_new_window(
@@ -364,13 +375,14 @@ def mlx_window(game: GameState) -> None:
             if game.show_path:
                 now = time.time()
 
-                # Bruno -> Check if path animation has completed (duck reached exit)
+                # Check if path animation has completed (duck reached exit)
                 if frame[0] >= len(game.path) and len(game.path) > 0:
                     game.path_animation_complete = True
 
                 duck_at_exit = game.path_animation_complete
 
-                # Bruno -> Continue animation for exit portal, or run normal path animation
+                # Continue animation for exit portal,
+                # or run normal path animation
                 if (
                     frame[0] <= len(game.path) or duck_at_exit
                 ) and now - last_time[0] >= 0.05:
@@ -401,13 +413,14 @@ def mlx_window(game: GameState) -> None:
             elif game.animate_bfs:
                 now = time.time()
 
-                # Bruno -> Check if BFS animation has completed (found exit)
+                # Check if BFS animation has completed (found exit)
                 if frame[0] >= len(game.explored) and len(game.explored) > 0:
                     game.bfs_animation_complete = True
 
                 bfs_at_exit = game.bfs_animation_complete
 
-                # Bruno -> Continue animation for exit portal, or run normal BFS animation
+                # Continue animation for exit portal,
+                # or run normal BFS animation
                 if (
                     frame[0] <= len(game.explored) or bfs_at_exit
                 ) and now - last_time[0] >= 0.05:
@@ -478,5 +491,4 @@ def mlx_window(game: GameState) -> None:
         on_loop,
         None
     )
-
     mlx.mlx_loop(mlx_ptr)
