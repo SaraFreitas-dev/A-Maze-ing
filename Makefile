@@ -38,29 +38,41 @@ install: venv
 		$(PIP) install mlx_CLXV/mlx-2.2-py3-none-any.whl; \
 	fi
 
-	@if ! command -v magick >/dev/null 2>&1; then \
+	@if [ -f "$$HOME/.linuxbrew/bin/brew" ]; then \
+		eval "$$($$HOME/.linuxbrew/bin/brew shellenv)"; \
+	fi; \
+	if ! command -v magick >/dev/null 2>&1; then \
 		echo "ImageMagick not found"; \
-		echo "Checking Homebrew..."; \
-		if ! command -v brew >/dev/null 2>&1; then \
-			echo "Homebrew not found"; \
-			echo "Installing Homebrew..."; \
-			/bin/bash -c "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; \
-			eval "$$($$HOME/.linuxbrew/bin/brew shellenv)" || true; \
-			eval "$$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" || true; \
+		echo "Checking local Homebrew..."; \
+		if [ ! -f "$$HOME/.linuxbrew/bin/brew" ]; then \
+			echo "Local Homebrew not found"; \
+			echo "Installing Homebrew locally..."; \
+			mkdir -p $$HOME/.linuxbrew; \
+			git clone https://github.com/Homebrew/brew.git $$HOME/.linuxbrew; \
 		fi; \
+		echo "Setting up Homebrew environment..."; \
+		eval "$$($$HOME/.linuxbrew/bin/brew shellenv)"; \
 		echo "Installing ImageMagick..."; \
-		brew install imagemagick; \
+		$$HOME/.linuxbrew/bin/brew install imagemagick; \
 	else \
 		echo "ImageMagick already installed"; \
 	fi
 
 # RUN THE GAME
 run:
-	$(VENV)/bin/python3 $(NAME) config.txt
+	@if [ -f "$$HOME/.linuxbrew/bin/brew" ]; then \
+		eval "$$($$HOME/.linuxbrew/bin/brew shellenv)" && $(VENV)/bin/python3 $(NAME) config.txt; \
+	else \
+		$(VENV)/bin/python3 $(NAME) config.txt; \
+	fi
 
 # DEBUGGER
 debug:
-	$(VENV)/bin/python3 -m pdb $(NAME) config.txt
+	@if [ -f "$$HOME/.linuxbrew/bin/brew" ]; then \
+		eval "$$($$HOME/.linuxbrew/bin/brew shellenv)" && $(VENV)/bin/python3 -m pdb $(NAME) config.txt; \
+	else \
+		$(VENV)/bin/python3 -m pdb $(NAME) config.txt; \
+	fi
 
 # CHECK FOR NORM ERRORS
 lint:
