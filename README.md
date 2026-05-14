@@ -436,12 +436,14 @@ The project uses:
 
 # Future Improvements
 
-- Sound effects
-- More maze themes
-- Smarter enemy/path systems
-- Save player movements - score
-- UI improvements
-- Add the DFS animation (showing how the maze is build using this algorithm)
+- Sound effects and ambient music
+- More maze themes and visual styles
+- Smarter enemy and pathfinding systems
+- Save player movements and scores
+- UI and menu improvements
+- DFS generation animation (showing the maze being built step-by-step)
+- Additional solving algorithms
+- Continuous player movement with key press support
 
 ---
 
