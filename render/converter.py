@@ -206,6 +206,45 @@ def generate_all_assets(tile_size: int) -> None:
         convert_to_xpm(resized_gothic_exit_png, gothic_exit_xpm)
 
     # -------------------------
+    # EXIT DOOR VARIANT 2 (for animation)
+    # -------------------------
+
+    resized_normal_exit2_png = (
+        f"assets/generated/normal_exit2_{tile_size}.png")
+
+    normal_exit2_xpm = (
+        f"assets/generated/normal_exit2_{tile_size}.xpm")
+
+    if not os.path.exists(normal_exit2_xpm):
+
+        generate_scaled_asset(
+            "assets/imgs/normal_exit2.png",
+            resized_normal_exit2_png,
+            tile_size
+        )
+
+        convert_to_xpm(resized_normal_exit2_png, normal_exit2_xpm)
+
+    # -------------------------
+
+    resized_gothic_exit2_png = (
+        f"assets/generated/gothic_exit2_{tile_size}.png"
+    )
+    gothic_exit2_xpm = (
+        f"assets/generated/gothic_exit2_{tile_size}.xpm"
+    )
+
+    if not os.path.exists(gothic_exit2_xpm):
+
+        generate_scaled_asset(
+            "assets/imgs/gothic_exit2.png",
+            resized_gothic_exit2_png,
+            tile_size
+        )
+
+        convert_to_xpm(resized_gothic_exit2_png, gothic_exit2_xpm)
+
+    # -------------------------
     # DUCK
     # -------------------------
 

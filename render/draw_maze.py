@@ -2,6 +2,7 @@ from mlx import Mlx
 from render.Assets import Assets
 from mazegen.Maze import Maze
 from typing import Any
+import time
 
 
 # ---------------------------------
@@ -10,6 +11,7 @@ from typing import Any
 
 WINDOW_WIDTH = 1600
 WINDOW_HEIGHT = 900
+BANNER_HEIGHT = 180  # Height reserved for bottom banner
 
 
 def logical_to_grid(logical_x: int, logical_y: int) -> tuple[int, int]:
@@ -62,7 +64,9 @@ def draw_maze(
     path: list[tuple[int, int]] | None = None,
     show_duck: bool = True,
 #Bruno -> created duck position to refresh on player move
-    duck_position: tuple[int, int] | None = None
+    duck_position: tuple[int, int] | None = None,
+#Bruno -> added exit animation support
+    animate_exit: bool = False
 ) -> None:
     """
     Draw the maze with mlx
@@ -133,9 +137,10 @@ def draw_maze(
     for grid_y, row in enumerate(solved_grid):
         for grid_x, cell in enumerate(row):
 
-            # Offset to center the maze
+            # Offset to center the maze above the banner
+            available_height = WINDOW_HEIGHT - BANNER_HEIGHT
             offset_x = (WINDOW_WIDTH - (maze.grid_width * tile_size)) // 2
-            offset_y = (WINDOW_HEIGHT - (maze.grid_height * tile_size)) // 2
+            offset_y = (available_height - (maze.grid_height * tile_size)) // 2
 
             # Convert grid -> pixels
             screen_x = offset_x + (grid_x * tile_size)
@@ -172,12 +177,20 @@ def draw_maze(
                     screen_y
                 )
 
-            # EXIT
+            # EXIT (with animation when duck reaches it)
             if (grid_x, grid_y) == (door_exit_x, door_exit_y):
+                # Bruno -> Exit portal animation when duck reaches exit
+                if animate_exit:
+                    # Alternate between exit and exit2 every 0.3 seconds for animation
+                    animation_frame = int(time.time() * 3.33) % 2  # ~3.33 Hz animation
+                    exit_image = assets.exit2 if animation_frame == 1 else assets.exit
+                else:
+                    exit_image = assets.exit
+
                 mlx.mlx_put_image_to_window(
                     mlx_ptr,
                     win_ptr,
-                    assets.exit,
+                    exit_image,
                     screen_x,
                     screen_y
                 )

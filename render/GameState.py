@@ -21,6 +21,10 @@ class GameState:
         #Bruno -> Track player path/trail for backtracking
         self.player_path: list[tuple[int, int]] = []
 
+        #Bruno -> Track exit animation states for modes 2 and 3
+        self.path_animation_complete: bool = False
+        self.bfs_animation_complete: bool = False
+
         self.clear_screen: bool = False
         self.reload_assets: bool = False
         self.maze: Maze | None = None

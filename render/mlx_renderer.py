@@ -4,7 +4,7 @@ from render.Assets import Assets
 from render.converter import generate_all_assets
 #Bruno -> Added helper function imports for door positioning and coordinate conversion
 from render.draw_maze import draw_maze, calculate_door_position, logical_to_grid, grid_to_logical
-from render.menu import (_prepare_menu_images, _draw_menu)
+from render.menu import (_prepare_menu_images, _draw_menu, _draw_banner)
 from render.GameState import GameState
 #Bruno -> Added so is_valid_move works
 from mazegen.Maze import Maze
@@ -42,7 +42,7 @@ def close(param: Any) -> None:
     os._exit(0)
 
 
-def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
+def key_hook(key: int, game: GameState, frame: list[int], param: Any, mlx: Any = None, mlx_ptr: Any = None, win_ptr: Any = None) -> None:
     """Menu and banner game options"""
 
     if game.mode == "MENU":
@@ -58,9 +58,32 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
     elif game.mode == "GAME":
         # STATIC ENTRY ON THE GAME
         if key == KEY_1:
+            # Bruno -> Complete game reset for fresh start
             game.mode = "GAME"
             game.clear_screen = True
             game.reload_assets = True
+            game.game_won = False
+            game.playing = False
+            game.show_path = False
+            game.animate_bfs = False
+            game.show_duck = True
+            frame[0] = 0
+            # Bruno -> Reset player path and position
+            game.player_path = []
+            # Bruno -> Reset animation flags
+            game.path_animation_complete = False
+            game.bfs_animation_complete = False
+            if game.generator is not None:
+                # Generate new maze
+                game.maze = game.generator.generate_maze()
+                game.path, game.explored = game.generator.solve("bfs")
+                # Reset player to entry
+                game.player_x, game.player_y = game.maze.entry
+                game.player_grid_x, game.player_grid_y = logical_to_grid(game.player_x, game.player_y)
+            # Bruno -> Clear and sync on game restart to prevent buffer corruption
+            if mlx and mlx_ptr and win_ptr:
+                mlx.mlx_clear_window(mlx_ptr, win_ptr)
+                mlx.mlx_do_sync(mlx_ptr)
             game.show_path = False
             game.playing = False
             game.game_won = False
@@ -75,26 +98,50 @@ def key_hook(key: int, game: GameState, frame: list[int], param: Any) -> None:
 
         # 2 - SHOW PATH ANIMATION
         if key == KEY_2:
+            # Bruno -> Reset for path animation mode
+            game.playing = False
+            game.game_won = False
             game.show_path = True
             game.animate_bfs = False
-            # Restart animation
-            frame[0] = 0
+            game.show_duck = True
+            game.player_path = []  # Clear any player trail
+            # Bruno -> Reset animation flags
+            game.path_animation_complete = False
+            game.bfs_animation_complete = False
+            frame[0] = 0  # Restart animation
 
         # 3 - SHOW PATH FINDER
         if key == KEY_3:
+            # Bruno -> Reset for BFS animation mode
+            game.playing = False
+            game.game_won = False
             game.show_path = False
             game.animate_bfs = True
-            frame[0] = 0
+            game.show_duck = False  # No duck in BFS mode
+            game.player_path = []  # Clear any player trail
+            # Bruno -> Reset animation flags
+            game.path_animation_complete = False
+            game.bfs_animation_complete = False
+            frame[0] = 0  # Restart animation
 
     #Bruno -> PLAYER GAME MODE
         # 4 - PLAYER MODE
         if key == KEY_4:
+            # Bruno -> Clear before entering player mode to prevent corruption
+            if mlx and mlx_ptr and win_ptr:
+                mlx.mlx_clear_window(mlx_ptr, win_ptr)
+                mlx.mlx_do_sync(mlx_ptr)
+
+            # Bruno -> Complete reset for player mode
             game.playing = True
             game.game_won = False
             game.show_path = False
             game.animate_bfs = False
             game.show_duck = True
             frame[0] = 0
+            # Bruno -> Reset animation flags
+            game.path_animation_complete = False
+            game.bfs_animation_complete = False
             # Bruno -> Need to use initialization different from other methods so duck doesnt jump 1 box at pressing 4, maybe correct later if possible, leave it for now
             # Bruno -> Initialize player position to VISUAL door entry position using helper function
             entry_x, entry_y = game.maze.entry
@@ -192,7 +239,7 @@ def handle_player_movement(key: int, game: GameState) -> None:
 def calculate_tile_size(game: GameState) -> int:
     """
     Dynamically calculate tile size
-    so the maze fits the window
+    so the maze fits the window above the banner
     """
     if game.maze is None:
         return 32
@@ -201,7 +248,9 @@ def calculate_tile_size(game: GameState) -> int:
 
     tile_width = (WINDOW_WIDTH // maze_width)
 
-    tile_height = (WINDOW_HEIGHT // maze_height)
+    # Bruno -> Account for banner space at bottom
+    available_height = WINDOW_HEIGHT - 180  # BANNER_HEIGHT
+    tile_height = (available_height // maze_height)
 
     return min(tile_width, tile_height)
 
@@ -242,7 +291,10 @@ def mlx_window(game: GameState) -> None:
             key,
             game,
             frame,
-            param
+            param,
+            mlx,
+            mlx_ptr,
+            win_ptr
             ),
         None
     )
@@ -311,10 +363,17 @@ def mlx_window(game: GameState) -> None:
             # SHOW PATH ANIMATION - Option 2
             if game.show_path:
                 now = time.time()
+
+                # Bruno -> Check if path animation has completed (duck reached exit)
+                if frame[0] >= len(game.path) and len(game.path) > 0:
+                    game.path_animation_complete = True
+
+                duck_at_exit = game.path_animation_complete
+
+                # Bruno -> Continue animation for exit portal, or run normal path animation
                 if (
-                    frame[0] <= len(game.path)
-                    and now - last_time[0] >= 0.05
-                ):
+                    frame[0] <= len(game.path) or duck_at_exit
+                ) and now - last_time[0] >= 0.05:
 
                     draw_maze(
                         game.maze,
@@ -328,8 +387,12 @@ def mlx_window(game: GameState) -> None:
                         if frame[0] > 0
                         else None,
                         show_duck=True,
-                        duck_position=None
+                        duck_position=None,
+                        animate_exit=duck_at_exit
                     )
+
+                    # Bruno -> Draw banner UI at bottom
+                    _draw_banner(mlx, mlx_ptr, win_ptr, menu_imgs)
 
                     frame[0] += 1
                     last_time[0] = now
@@ -337,10 +400,17 @@ def mlx_window(game: GameState) -> None:
             # SHOW PATH FINDER BFS ANIMATION - Option 3
             elif game.animate_bfs:
                 now = time.time()
+
+                # Bruno -> Check if BFS animation has completed (found exit)
+                if frame[0] >= len(game.explored) and len(game.explored) > 0:
+                    game.bfs_animation_complete = True
+
+                bfs_at_exit = game.bfs_animation_complete
+
+                # Bruno -> Continue animation for exit portal, or run normal BFS animation
                 if (
-                    frame[0] <= len(game.explored)
-                    and now - last_time[0] >= 0.05
-                ):
+                    frame[0] <= len(game.explored) or bfs_at_exit
+                ) and now - last_time[0] >= 0.05:
 
                     draw_maze(
                         game.maze,
@@ -354,32 +424,45 @@ def mlx_window(game: GameState) -> None:
                         if frame[0] > 0
                         else None,
                         show_duck=False,
-                        duck_position=None
+                        duck_position=None,
+                        animate_exit=bfs_at_exit
                     )
+
+                    # Bruno -> Draw banner UI at bottom
+                    _draw_banner(mlx, mlx_ptr, win_ptr, menu_imgs)
 
                     frame[0] += 1
                     last_time[0] = now
 
             # STATIC MAZE
             else:
-# Bruno -> refresh duck on player movement
-        # Determine duck position for player mode
-                  duck_position = None
-                  if game.playing:
-                      duck_position = (game.player_grid_y, game.player_grid_x)
+                # Determine duck position for player mode
+                duck_position = None
+                if game.playing:
+                    duck_position = (game.player_grid_y, game.player_grid_x)
 
-                  draw_maze(
-                      game.maze,
-                      mlx,
-                      mlx_ptr,
-                      win_ptr,
-                      tile_size,
-                      assets[0],
-                      game.maze.grid,
-                      game.player_path,
-                      show_duck=True,
-                      duck_position=duck_position
-                  )
+                # Bruno -> Check if player has won for exit animation
+                player_at_exit = game.game_won
+
+                draw_maze(
+                    game.maze,
+                    mlx,
+                    mlx_ptr,
+                    win_ptr,
+                    tile_size,
+                    assets[0],
+                    game.maze.grid,
+                    game.player_path,
+                    show_duck=True,
+                    duck_position=duck_position,
+                    animate_exit=player_at_exit
+                )
+
+                # Bruno -> Draw banner UI at bottom
+                _draw_banner(mlx, mlx_ptr, win_ptr, menu_imgs)
+
+                # Bruno -> Conservative sync after static/player rendering
+                mlx.mlx_do_sync(mlx_ptr)
 
     # WINDOW EVENTS
     mlx.mlx_hook(

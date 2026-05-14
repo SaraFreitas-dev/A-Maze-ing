@@ -52,8 +52,13 @@ class Assets:
             f"assets/generated/{theme}_duck_{tile_size}.xpm"
         )
 
-        # EXIT DOOR
+        # EXIT DOOR (for animation)
         self.exit, _, _ = mlx.mlx_xpm_file_to_image(
             mlx_ptr,
             f"assets/generated/{theme}_exit_{tile_size}.xpm"
+        )
+        # EXIT DOOR VARIANT 2 (for animation)
+        self.exit2, _, _ = mlx.mlx_xpm_file_to_image(
+            mlx_ptr,
+            f"assets/generated/{theme}_exit2_{tile_size}.xpm"
         )
