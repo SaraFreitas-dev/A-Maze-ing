@@ -31,3 +31,4 @@ class GameState:
         self.path: list[tuple[int, int]] | None = None
         self.explored: list[tuple[int, int]] | None = None
         self.generator: MazeGenerator | None = None
+        self.output_file: str | None = None
