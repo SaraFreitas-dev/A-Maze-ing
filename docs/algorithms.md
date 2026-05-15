@@ -1,169 +1,362 @@
-# Algorithms Documentation
+# Algorithms
 
-This document explains the algorithms used in the A-Maze-ing project for maze generation and pathfinding.
+This document explains the core algorithms used in the **A-Maze-ing** project.
 
-## Overview
+The project mainly relies on:
+- Depth-First Search (DFS) for maze generation
+- Breadth-First Search (BFS) for maze solving
 
-The project uses two main algorithms:
-- **DFS (Depth-First Search)** for maze generation
-- **BFS (Breadth-First Search)** for maze solving and pathfinding
+These algorithms are responsible for:
+- creating valid mazes
+- generating paths
+- solving the maze
+- visualizing exploration and traversal
 
-## DFS - Maze Generation Algorithm
+---
 
-### What is DFS?
+# 📁 Main Files
 
-Depth-First Search is a graph traversal algorithm that explores as far as possible along each branch before backtracking.
+```text
+mazegen/
+├── generator.py
+└── solver.py
+```
 
-### Why DFS for Maze Generation?
+---
 
-DFS was chosen for maze generation because:
-- **Natural maze structure**: Creates long, winding corridors
-- **Perfect connectivity**: Guarantees all cells are reachable
-- **Backtracking behavior**: Creates dead ends and interesting paths
-- **Simplicity**: Relatively easy to implement and understand
-- **Memory efficiency**: Uses stack-based recursion
+# 🧠 Overview
 
-### How DFS Works in Maze Generation
+The project uses two different graph traversal algorithms:
 
-1. **Start**: Begin at a random cell in the maze
-2. **Mark**: Mark the current cell as visited
-3. **Choose**: Select a random unvisited neighbor
-4. **Carve**: Remove the wall between current cell and chosen neighbor
-5. **Move**: Move to the chosen neighbor
-6. **Recurse**: Repeat the process from the new cell
-7. **Backtrack**: When no unvisited neighbors exist, backtrack to previous cell
-8. **Continue**: Repeat until all cells are visited
+| Algorithm | Purpose |
+|-----------|----------|
+| DFS | Maze generation |
+| BFS | Shortest path solving |
 
-### DFS Implementation Details
+Both algorithms operate on the maze's expanded grid representation.
+
+---
+
+# 🌱 DFS Maze Generation
+
+Main function:
 
 ```python
-def dfs_generator(maze):
-    """
-    Generate maze using Depth-First Search algorithm
-    """
-    # Implementation creates a perfect maze with single solution path
-    # Uses recursive backtracking to carve paths through walls
-    # Ensures all cells are reachable from any starting point
+def dfs_generator(maze: Maze) -> None:
 ```
 
-### DFS Characteristics
+Main file:
 
-- **Time Complexity**: O(V + E) where V = cells, E = connections
-- **Space Complexity**: O(V) for the recursion stack
-- **Result**: Perfect maze (exactly one path between any two points)
-- **Randomness**: Uses random neighbor selection for varied results
+```text
+mazegen/generator.py
+```
 
-## BFS - Pathfinding Algorithm
+---
 
-### What is BFS?
+# 🧩 Goal of DFS
 
-Breadth-First Search is a graph traversal algorithm that explores all neighbors at the current depth before moving to nodes at the next depth level.
+DFS is used to:
+- carve paths through walls
+- visit every logical cell
+- create a valid maze structure
+- generate a perfect maze
 
-### Why BFS for Pathfinding?
+A perfect maze means:
+- every cell is reachable
+- there is only one valid path between cells
+- no loops exist
 
-BFS was chosen for maze solving because:
-- **Shortest path guarantee**: Always finds the optimal solution
-- **Level-by-level exploration**: Systematic and complete
-- **Animation friendly**: Can visualize exploration process
-- **Deterministic**: Same maze always produces same solution
+---
 
-### How BFS Works in Maze Solving
+# 🧠 Expanded Grid System
 
-1. **Initialize**: Start from entry point with empty queue
-2. **Enqueue**: Add starting position to queue
-3. **Explore**: For each position in queue:
-   - Check all valid neighboring cells
-   - Add unvisited neighbors to queue
-   - Mark neighbors as visited with parent reference
-4. **Track**: Keep parent references for path reconstruction
-5. **Continue**: Repeat until exit is found or queue is empty
-6. **Reconstruct**: Use parent references to build solution path
+The maze internally uses an expanded grid.
 
-### BFS Implementation Details
+Logical cells are separated by walls.
+
+Example:
+
+```text
+# # # # #
+# . # . #
+# # # # #
+# . # . #
+# # # # #
+```
+
+Logical coordinates are converted using:
 
 ```python
-def bfs_solve_maze(maze):
-    """
-    Find shortest path using Breadth-First Search
-    Returns both the solution path and exploration sequence
-    """
-    # Returns tuple: (path, explored)
-    # path: shortest route from entry to exit
-    # explored: all cells visited during search (for animation)
+(y * 2 + 1), (x * 2 + 1)
 ```
 
-### BFS Characteristics
+This allows the algorithm to:
+- carve walls
+- connect cells
+- preserve maze structure
 
-- **Time Complexity**: O(V + E) where V = cells, E = connections
-- **Space Complexity**: O(V) for the queue and visited tracking
-- **Optimality**: Guarantees shortest path solution
-- **Completeness**: Will find solution if one exists
+---
 
-## Algorithm Integration
+# 🔄 DFS Traversal Logic
 
-### Grid Coordinate System
+The DFS algorithm:
 
-The algorithms work with two coordinate systems:
+1. Starts at the first logical cell
+2. Marks the current cell as visited
+3. Randomly selects a direction
+4. Moves two cells away
+5. Breaks the wall between cells
+6. Recursively continues traversal
 
-**Logical Coordinates**:
-- Used for maze dimensions (width × height)
-- Represents actual maze cells
-- Example: 10×8 maze has cells (0,0) to (9,7)
+---
 
-**Grid Coordinates**:
-- Used for internal grid representation
-- Includes walls between cells
-- Size: (2×width + 1) × (2×height + 1)
-- Example: 10×8 maze becomes 21×17 grid
+# 🎲 Randomized Directions
 
-### Perfect vs Imperfect Mazes
+The directions are shuffled using:
 
-**Perfect Maze** (`perfect=True`):
-- Generated using pure DFS
-- Exactly one path between any two points
-- No cycles or loops
-- Guaranteed unique solution
-
-**Imperfect Maze** (`perfect=False`):
-- Starts with perfect maze from DFS
-- Additional wall-breaking phase
-- Creates multiple paths and cycles
-- May have multiple solutions (BFS finds shortest)
-
-## Algorithm Flow
-
-```
-1. Initialize maze grid (all walls)
-2. Run DFS to generate perfect maze
-3. Add entry/exit points
-4. If imperfect: break additional walls
-5. Validate maze structure
-6. BFS to find solution path
-7. Return maze + solution data
+```python
+random.sample(directions, len(directions))
 ```
 
-## Performance Characteristics
+This guarantees:
+- randomized mazes
+- different layouts every execution
+- procedural generation behavior
 
-### DFS Generation
-- **Speed**: Very fast, linear time
-- **Memory**: Low memory usage (stack-based)
-- **Quality**: Produces natural-looking mazes
+---
 
-### BFS Solving
-- **Speed**: Fast, explores systematically  
-- **Memory**: Moderate (queue and visited set)
-- **Accuracy**: Always finds optimal solution
+# 🪓 Wall Breaking
 
-## Algorithmic Guarantees
+When DFS moves to a new cell:
 
-1. **Maze Connectivity**: DFS ensures all cells reachable
-2. **Solution Existence**: Every generated maze is solvable
-3. **Optimal Path**: BFS guarantees shortest solution
-4. **Deterministic**: Same seed produces identical results
+```text
+Current Cell -> Wall -> Next Cell
+```
 
-## Visual Algorithm Behavior
+the wall between both cells is removed.
 
-- **DFS**: Creates long corridors, natural branching
-- **BFS**: Explores in expanding circles from start
-- **Animation**: BFS exploration can be visualized step-by-step
-- **Path**: Solution highlights shortest route through maze
+This creates:
+- corridors
+- connected paths
+- valid maze routes
+
+---
+
+# 📌 DFS Characteristics
+
+| Property | Behavior |
+|----------|-----------|
+| Traversal Type | Recursive |
+| Path Type | Deep exploration |
+| Maze Style | Long corridors |
+| Randomness | High |
+| Guarantees | Fully connected maze |
+
+---
+
+# 🚪 Entry and Exit Integration
+
+After DFS generation:
+
+```python
+apply_entry_exit(maze)
+```
+
+opens:
+- the entry cell
+- the exit cell
+- external maze doors
+
+The project validates that:
+- entry and exit are located on maze borders
+- coordinates are valid
+- doors connect correctly with the expanded grid
+
+---
+
+# 🛡️ Maze Validation
+
+The generation system validates:
+- invalid open spaces
+- malformed structures
+- impossible layouts
+
+Main validation:
+
+```python
+check_open_areas()
+```
+
+This prevents:
+- large empty spaces
+- invalid 3x3 open blocks
+
+---
+
+# 🧱 Imperfect Maze Generation
+
+If the maze is configured as:
+
+```text
+PERFECT=False
+```
+
+the algorithm uses:
+
+```python
+break_walls()
+```
+
+to:
+- remove extra walls
+- create loops
+- generate multiple possible paths
+
+This transforms the perfect DFS maze into an imperfect maze.
+
+---
+
+# 🔎 BFS Maze Solving
+
+Main function:
+
+```python
+def bfs_solve_maze(maze: Maze)
+```
+
+Main file:
+
+```text
+mazegen/solver.py
+```
+
+---
+
+# 🎯 Goal of BFS
+
+BFS is used to:
+- find the shortest path
+- solve the maze
+- reconstruct the optimal route
+- generate exploration animations
+
+---
+
+# 📦 BFS Data Structures
+
+The solver uses:
+
+| Structure | Purpose |
+|-----------|----------|
+| Queue (`deque`) | Exploration order |
+| Set (`visited`) | Prevent revisits |
+| Dictionary (`parent`) | Path reconstruction |
+| List (`explored`) | Animation visualization |
+
+---
+
+# 🌊 BFS Traversal Logic
+
+The BFS algorithm:
+
+1. Starts at the entry point
+2. Explores neighboring cells
+3. Expands layer by layer
+4. Continues until the exit is found
+5. Reconstructs the shortest path
+
+Unlike DFS:
+- BFS explores breadth-first
+- guarantees the shortest path
+
+---
+
+# 🧭 Valid Movement Rules
+
+The solver ignores:
+- walls (`1`)
+- logo cells (`2`)
+- already visited cells
+- out-of-bounds positions
+
+This ensures:
+- safe traversal
+- valid pathfinding
+- no infinite loops
+
+---
+
+# 🧩 Path Reconstruction
+
+Once the exit is found:
+
+```python
+parent[(new_y, new_x)] = (y, x)
+```
+
+stores:
+- where each cell came from
+
+The algorithm then reconstructs the path:
+- backwards from exit
+- until the entry point is reached
+
+Finally:
+- the path is reversed
+- producing the final solution order
+
+---
+
+# 🎞️ Explored Cells Animation
+
+BFS also stores:
+
+```python
+explored.append((new_y, new_x))
+```
+
+This allows the renderer to:
+- visualize exploration
+- animate the solver
+- display visited cells progressively
+
+---
+
+# 📌 BFS Characteristics
+
+| Property | Behavior |
+|----------|-----------|
+| Traversal Type | Iterative |
+| Exploration Style | Layer-by-layer |
+| Path Guarantee | Shortest path |
+| Memory Usage | Higher than DFS |
+| Animation Friendly | Yes |
+
+---
+
+# ⚖️ DFS vs BFS
+
+| DFS | BFS |
+|-----|-----|
+| Generates mazes | Solves mazes |
+| Recursive | Iterative |
+| Deep traversal | Breadth traversal |
+| Randomized | Deterministic |
+| Creates paths | Finds shortest path |
+
+---
+
+# 🎯 Algorithm Goals
+
+The algorithm system was designed to:
+- generate valid procedural mazes
+- guarantee solvable layouts
+- provide visual algorithm demonstrations
+- support animation systems
+- separate generation and solving logic cleanly
+
+The combination of DFS and BFS creates:
+- randomized maze structures
+- reliable shortest-path solving
+- interactive visualization systems
+- reproducible procedural generation
