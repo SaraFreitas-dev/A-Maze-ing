@@ -67,8 +67,8 @@ def _prepare_menu_images(mlx: Mlx, mlx_ptr: Any) -> MenuImages:
             # From the image, the useful content is roughly in the middle third
             crop_top = int(height * 0.35)  # Start from about 35% down
             crop_bottom = int(height * 0.65)  # End at about 65% down
-            crop_left = 0  # Keep full width
-            crop_right = width
+            crop_left = - 20
+            crop_right = width + 20
 
             cropped_src = src.crop((crop_left, crop_top,
                                     crop_right, crop_bottom))
