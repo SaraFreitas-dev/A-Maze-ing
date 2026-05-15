@@ -38,10 +38,10 @@ Generate procedural mazes, visualize BFS solving algorithms, switch themes, and 
   - [DFS - Maze Generation](#dfs--maze-generation)
   - [BFS - Path Solver](#bfs--path-solver)
 - [Installation Instructions](#Installation-Instructions)
+- [Reusable Maze Generator Package](#reusable-maze-generator-package)
 - [Configuration File](#configuration-file)
 - [Game Controls](#game-controls)
 - [Maze Rules](#maze-rules)
-- [Reusable Maze Generator Package](#reusable-maze-generator-package)
 - [Themes](#themes)
 - [Bonus Features](#bonus-features)
 - [Technical Notes](#technical-notes)
@@ -310,6 +310,49 @@ Make sure:
 - MLX is correctly compiled
 - `.whl` file is installed if required
 
+---
+
+
+## Reusable Maze Generator Package
+
+This project includes a reusable Python package called `mazegen`.
+
+The package contains the core maze generation logic separated from the game and rendering systems, allowing it to be reused in future projects or installed independently.
+
+The reusable module includes:
+- Maze data structures
+- DFS maze generation
+- BFS maze solving
+- Entry and exit handling
+- Maze validation
+- Optional imperfect maze generation
+
+The graphical interface, MLX rendering, themes, menus, and gameplay systems are not part of the package, since they belong to the standalone application.
+
+### Install the Package
+
+```bash
+pip install mazegen-1.0.0-py3-none-any.whl
+```
+
+### Example Usage
+```bash
+from mazegen import MazeGenerator
+
+generator = MazeGenerator(
+    width=20,
+    height=20,
+    entry=(0, 0),
+    exit=(19, 19),
+    perfect=True,
+    seed=42
+)
+
+maze = generator.generate_maze()
+path = generator.solve("bfs")
+
+# python and exit() to test on the terminal
+```
 
 ---
 
@@ -360,47 +403,6 @@ Rules:
 - If a seed is given, the maze generated must be always the same
 - If "PERFECT=True" on the config file, then there must be only one possible solution to the maze
 - Unless the maze is not big enough to showcase it, a 42 logo must be displayed on the center of the maze
-
----
-
-## Reusable Maze Generator Package
-
-This project includes a reusable Python package called `mazegen`.
-
-The package contains the core maze generation logic separated from the game and rendering systems, allowing it to be reused in future projects or installed independently.
-
-The reusable module includes:
-- Maze data structures
-- DFS maze generation
-- BFS maze solving
-- Entry and exit handling
-- Maze validation
-- Optional imperfect maze generation
-
-The graphical interface, MLX rendering, themes, menus, and gameplay systems are not part of the package, since they belong to the standalone application.
-
-### Install the Package
-
-```bash
-pip install dist/mazegen-1.0.0-py3-none-any.whl
-```
-
-### Example Usage
-```bash
-from mazegen import MazeGenerator
-
-generator = MazeGenerator(
-    width=20,
-    height=20,
-    entry=(0, 0),
-    exit=(19, 19),
-    perfect=True,
-    seed=42
-)
-
-maze = generator.generate_maze()
-path = generator.solve("bfs")
-```
 
 ---
 
