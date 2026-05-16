@@ -21,3 +21,4 @@ exclude = ["venv", "__pycache__", "mlx_CLXV"]
 
 [tool.mypy]
 exclude = ["venv", "mlx_CLXV"]
+disable_error_code = ["import-untyped"]

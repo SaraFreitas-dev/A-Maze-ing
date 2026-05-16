@@ -266,12 +266,6 @@ Install venv (virtual environment):
 make venv
 ```
 
-Activate venv:
-```bash
-make activate
-```
-Obs. You can leave venv by typing the deactivate command.
-
 Install all dependencies (on venv):
 ```bash
 make install

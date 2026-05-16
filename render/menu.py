@@ -61,16 +61,16 @@ def _prepare_menu_images(mlx: Mlx, mlx_ptr: Any) -> MenuImages:
             src = Image.open("assets/imgs/banner.png")
 
             # Convert palette image to RGBA to handle transparency
-            src = src.convert("RGBA")
+            src_rgba = src.convert("RGBA")
 
             # Crop to non-transparent content bounds (removes black gaps)
-            bbox = src.getbbox()
+            bbox = src_rgba.getbbox()
             if bbox:
-                src = src.crop(bbox)
+                src_rgba = src_rgba.crop(bbox)
 
             # Composite onto black background to remove colored bg
-            background = Image.new("RGB", src.size, (0, 0, 0))
-            background.paste(src, mask=src.split()[3])
+            background = Image.new("RGB", src_rgba.size, (0, 0, 0))
+            background.paste(src_rgba, mask=src_rgba.split()[3])
 
             # Resize to banner dimensions
             resized = background.resize(

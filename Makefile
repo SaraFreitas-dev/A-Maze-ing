@@ -12,15 +12,8 @@ venv:
 		$(PYTHON) -m venv $(VENV); \
 	else \
 		echo "Venv already exists"; \
-	fi
-
-# ENTER ON VENV / ACTIVATE
-activate:
-	@if [ -n "$$VIRTUAL_ENV" ]; then \
-		echo "Already inside a virtual environment"; \
-	else \
-		echo "Run:"; \
-		echo "source $(VENV)/bin/activate"; \
+	echo "To activate, Run the following command:"; \
+	echo "source $(VENV)/bin/activate"; \
 	fi
 
 # INSTALL ALL REQUIREMENTS

@@ -2,5 +2,4 @@ venv
 __pycache__
 .mypy_cache
 assets/generated
-.flake8
 output_maze.txt
