@@ -8,16 +8,9 @@ from render.draw_maze import (draw_maze,
                               grid_to_logical)
 from render.menu import (_prepare_menu_images, _draw_menu, _draw_banner)
 from render.GameState import GameState
+from render.constants import WINDOW_WIDTH, WINDOW_HEIGHT, MAZE_AREA_HEIGHT
 import os
 import time
-
-
-# ---------------------------------
-# WINDOW
-# ---------------------------------
-
-WINDOW_WIDTH: int = 1600
-WINDOW_HEIGHT: int = 900
 
 # ---------------------------------
 # GAME EVENTS
@@ -254,15 +247,8 @@ def calculate_tile_size(game: GameState) -> int:
     """
     if game.maze is None:
         return 32
-    maze_height = game.maze.grid_height
-    maze_width = game.maze.grid_width
-
-    tile_width = (WINDOW_WIDTH // maze_width)
-
-    #  Account for banner space at bottom
-    available_height = WINDOW_HEIGHT - 180  # BANNER_HEIGHT
-    tile_height = (available_height // maze_height)
-
+    tile_width: int = WINDOW_WIDTH // game.maze.grid_width
+    tile_height: int = MAZE_AREA_HEIGHT // game.maze.grid_height
     return min(tile_width, tile_height)
 
 
@@ -384,7 +370,7 @@ def mlx_window(game: GameState) -> None:
                 # or run normal path animation
                 if (
                     frame[0] <= len(game.path) or duck_at_exit
-                ) and now - last_time[0] >= 0.05:
+                ) and now - last_time[0] >= 0.02:
 
                     draw_maze(
                         game.maze,

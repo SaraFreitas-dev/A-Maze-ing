@@ -4,10 +4,14 @@ from dataclasses import dataclass
 from typing import Any
 from PIL import Image
 from mlx import Mlx
-
-# ── Window ────────────────────────────────────────────────
-WINDOW_WIDTH: int = 1600
-WINDOW_HEIGHT: int = 900
+from render.constants import (
+    WINDOW_WIDTH,
+    WINDOW_HEIGHT,
+    BANNER_HEIGHT,
+    BANNER_WIDTH,
+    BANNER_X,
+    BANNER_Y
+)
 
 # ── Key codes ─────────────────────────────────────────────
 KEY_ESC: int = 65307
@@ -23,12 +27,13 @@ class MenuImages:
 
 
 # ── Asset helpers ─────────────────────────────────────────
-
 def _prepare_menu_images(mlx: Mlx, mlx_ptr: Any) -> MenuImages:
-    """Load the menu background XPM, generating it from PNG if needed."""
+    """Load the menu background and banner XPMs,
+    generating them from PNG if needed."""
     os.makedirs("assets/generated", exist_ok=True)
     imgs = MenuImages()
 
+    # ── Background ────────────────────────────────────────
     bg_xpm = (
         f"assets/generated/"
         f"menu_bgnew_{WINDOW_WIDTH}x{WINDOW_HEIGHT}.xpm"
@@ -42,43 +47,37 @@ def _prepare_menu_images(mlx: Mlx, mlx_ptr: Any) -> MenuImages:
                 Image.Resampling.LANCZOS
             )
             resized_src.save(bg_png)
-
-        # Updated from convert to magick for modern ImageMagick
         os.system(f"magick {bg_png} {bg_xpm}")
     imgs.bg, _, _ = mlx.mlx_xpm_file_to_image(mlx_ptr, bg_xpm)
 
-    # Load banner image
-    banner_height = 180
-    banner_xpm = f"assets/generated/banner_{WINDOW_WIDTH}x{banner_height}.xpm"
+    # ── Banner ────────────────────────────────────────────
+    banner_xpm = (
+        f"assets/generated/"
+        f"banner_{BANNER_WIDTH}x{BANNER_HEIGHT}.xpm"
+    )
     if not os.path.exists(banner_xpm):
         banner_png = banner_xpm.replace(".xpm", ".png")
         if not os.path.exists(banner_png):
-            src = Image.open("assets/imgs/banner.jpeg")
+            src = Image.open("assets/imgs/banner.png")
 
-            # Smart crop to remove black borders
-            # Convert to RGB if needed for consistency
-            if src.mode != "RGB":
-                src = src.convert("RGB")  # type: ignore
+            # Convert palette image to RGBA to handle transparency
+            src = src.convert("RGBA")
 
-            # Manual crop based on the banner layout we can see
-            # The content appears to be in the middle horizontal band
-            width, height = src.size
+            # Crop to non-transparent content bounds (removes black gaps)
+            bbox = src.getbbox()
+            if bbox:
+                src = src.crop(bbox)
 
-            # From the image, the useful content is roughly in the middle third
-            crop_top = int(height * 0.35)  # Start from about 35% down
-            crop_bottom = int(height * 0.65)  # End at about 65% down
-            crop_left = - 20
-            crop_right = width + 20
+            # Composite onto black background to remove colored bg
+            background = Image.new("RGB", src.size, (0, 0, 0))
+            background.paste(src, mask=src.split()[3])
 
-            cropped_src = src.crop((crop_left, crop_top,
-                                    crop_right, crop_bottom))
-
-            # Resize with high quality resampling
-            resized_src = cropped_src.resize(
-                (WINDOW_WIDTH, banner_height),
-                Image.Resampling.LANCZOS  # High quality resampling
+            # Resize to banner dimensions
+            resized = background.resize(
+                (BANNER_WIDTH, BANNER_HEIGHT),
+                Image.Resampling.LANCZOS
             )
-            resized_src.save(banner_png)
+            resized.save(banner_png)
         os.system(f"magick {banner_png} {banner_xpm}")
     imgs.banner, _, _ = mlx.mlx_xpm_file_to_image(mlx_ptr, banner_xpm)
 
@@ -98,8 +97,9 @@ def _draw_menu(
 def _draw_banner(
     mlx: Mlx, mlx_ptr: Any, win_ptr: Any, imgs: MenuImages
 ) -> None:
-    """Render the banner at the bottom of the window."""
+    """Render the banner centered with padding."""
     if imgs.banner is None:
         return
-    banner_y = WINDOW_HEIGHT - 180  # Position at bottom
-    mlx.mlx_put_image_to_window(mlx_ptr, win_ptr, imgs.banner, 0, banner_y)
+    mlx.mlx_put_image_to_window(
+        mlx_ptr, win_ptr, imgs.banner, BANNER_X, BANNER_Y
+    )

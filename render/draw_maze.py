@@ -1,17 +1,9 @@
 from mlx import Mlx
 from render.Assets import Assets
+from render.constants import (maze_offset_x, maze_offset_y)
 from mazegen.Maze import Maze
 from typing import Any
 import time
-
-
-# ---------------------------------
-# WINDOW
-# ---------------------------------
-
-WINDOW_WIDTH = 1600
-WINDOW_HEIGHT = 900
-BANNER_HEIGHT = 180  # Height reserved for bottom banner
 
 
 def logical_to_grid(logical_x: int, logical_y: int) -> tuple[int, int]:
@@ -30,19 +22,17 @@ def grid_to_logical(grid_x: int, grid_y: int) -> tuple[int, int]:
     return (grid_x - 1) // 2, (grid_y - 1) // 2
 
 
-def calculate_door_position(logical_x: int,
-                            logical_y: int,
-                            maze: Maze) -> tuple[int, int]:
+def calculate_door_position(
+    logical_x: int,
+    logical_y: int,
+    maze: Maze
+) -> tuple[int, int]:
     """
     Calculate the visual door position from logical coordinates.
     The door is placed 1 cell away from the logical position
     towards the maze edge.
     """
-
-    # Convert logical to grid coordinates using utility function
     grid_x, grid_y = logical_to_grid(logical_x, logical_y)
-
-    # Calculate door position (offset by 1 towards maze edge)
     door_x, door_y = grid_x, grid_y
 
     if grid_x == 1:
@@ -71,7 +61,9 @@ def draw_maze(
     animate_exit: bool = False
 ) -> None:
     """
-    Draw the maze with mlx
+    Draw the maze with mlx.
+    Maze is centered horizontally and vertically
+    within the maze area (above the banner).
     """
 
     # ---------------------------------
@@ -81,7 +73,6 @@ def draw_maze(
     entry_x, entry_y = maze.entry
     exit_x, exit_y = maze.exit
 
-    # Use utility functions for coordinate conversion
     entry_x, entry_y = logical_to_grid(entry_x, entry_y)
     exit_x, exit_y = logical_to_grid(exit_x, exit_y)
 
@@ -136,19 +127,26 @@ def draw_maze(
         elif show_duck:
             solved_grid[current_y][current_x] = 3
 
+    # ---------------------------------
+    # CENTERING
+    # ---------------------------------
+
+    # Center maze horizontally in full window width
+    # Center maze vertically in maze area only (above banner)
+    offset_x: int = maze_offset_x(maze.grid_width, tile_size)
+    offset_y: int = maze_offset_y(maze.grid_height, tile_size)
+
+    # ---------------------------------
+    # DRAW TILES
+    # ---------------------------------
+
     for grid_y, row in enumerate(solved_grid):
         for grid_x, cell in enumerate(row):
 
-            # Offset to center the maze above the banner
-            available_height = WINDOW_HEIGHT - BANNER_HEIGHT
-            offset_x = (WINDOW_WIDTH - (maze.grid_width * tile_size)) // 2
-            offset_y = (available_height - (maze.grid_height * tile_size)) // 2
+            screen_x: int = offset_x + (grid_x * tile_size)
+            screen_y: int = offset_y + (grid_y * tile_size)
 
-            # Convert grid -> pixels
-            screen_x = offset_x + (grid_x * tile_size)
-            screen_y = offset_y + (grid_y * tile_size)
-
-            # draw floor first for duck positions
+            # Draw floor first for duck positions
             if cell == 3:
                 base_tile = assets.floor
             elif cell == 0:
@@ -182,11 +180,12 @@ def draw_maze(
             # EXIT (with animation when duck reaches it)
             if (grid_x, grid_y) == (door_exit_x, door_exit_y):
                 if animate_exit:
-                    # Alternate between exit & exit2
-                    # every 0.3 seconds for animation
                     animation_frame = int(time.time() * 3.33) % 2
-                    exit_image = (assets.exit2 if animation_frame == 1
-                                  else assets.exit)
+                    exit_image = (
+                        assets.exit2
+                        if animation_frame == 1
+                        else assets.exit
+                    )
                 else:
                     exit_image = assets.exit
 
