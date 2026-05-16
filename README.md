@@ -343,7 +343,9 @@ generator = MazeGenerator(
 )
 
 maze = generator.generate_maze()
-path = generator.solve("bfs")
+path, explored = generator.solve("bfs")
+
+`solve()` returns a tuple — `path` is the shortest path, `explored` is the list of cells visited during search.
 
 # python and exit() to test on the terminal
 ```
@@ -364,6 +366,10 @@ PERFECT=True
 SEED=42
 ```
 Obs. Commented lines start with a #
+
+Parameters: width and height define the maze size, entry and exit must be border coordinates,
+perfect=True enforces a single solution, seed fixes the random generation for reproducibility.
+
 Rules:
 - ENTRY and EXIT must be placed on maze borders
 - WIDTH and HEIGHT must be positive integers
